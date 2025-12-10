@@ -1,14 +1,15 @@
 USE [master]
 GO
 
-IF DB_ID('products_db') IS NOT NULL
+IF DB_ID('products_db') IS NULL
   BEGIN
 
-    CREATE DATABASE [products_db];
-    GO
+	PRINT 'Creating Database products_db...'
 
   END
 
+CREATE DATABASE [products_db]
+GO
 
 
 USE [products_db]
@@ -19,21 +20,21 @@ GO
 SET QUOTED_IDENTIFIER ON
 GO
 
-IF NOT EXISTS (SELECT 1
-FROM sys.database_principals
-WHERE name = N'redarbor_user')
-BEGIN
+-- IF NOT EXISTS (SELECT 1
+-- FROM sys.database_principals
+-- WHERE name = N'redarbor_user')
+-- BEGIN
 
-  CREATE LOGIN [redarbor_user] WITH PASSWORD = 'Passw0rd'
-  GO
+--   CREATE LOGIN [redarbor_user] WITH PASSWORD = 'Passw0rd'
+--   GO
 
-  CREATE USER [redarbor_user] FOR LOGIN [redarbor_user] WITH DEFAULT_SCHEMA=[dbo]
-  GO
+--   CREATE USER [redarbor_user] FOR LOGIN [redarbor_user] WITH DEFAULT_SCHEMA=[dbo]
+--   GO
 
-  EXEC sp_addrolemember N'db_owner', N'redarbor_user'
-  GO
+--   EXEC sp_addrolemember N'db_owner', N'redarbor_user'
+--   GO
 
-END
+-- END
 
 
 
@@ -111,7 +112,7 @@ BEGIN
 	
 	-- Fashion 
 	INSERT INTO products(product_id,name,description,price,category_id) VALUES(6,'Ae Airflex+ Skinny Jean','AirFlex+: Authentic denim style with lightweight flexibility and comfort you have to feel to believe/High level of stretch that maintains its shape/Dark wash/With patches',1399.30,3);
-	INSERT INTO products(product_id,name,description,price,category_id) VALUES(7,'Ésika Unisex Perfume It''s You Eau De Toilette 90 Ml','Esika YOU es una fragancia unisex que celebra la autenticidad y el disfrute de la vida en cada momento. Con una mezcla vibrante de notas cítricas y frescas, esta eau de toilette es perfecta para aquellos que buscan una fragancia energizante y única.',175,3);
+	INSERT INTO products(product_id,name,description,price,category_id) VALUES(7,'Ésika Unisex Perfume It''s You Eau De Toilette 90 Ml','Esika YOU is a unisex fragrance that celebrates authenticity and enjoying life in every moment. With a vibrant blend of citrus and fresh notes, this eau de toilette is perfect for those seeking an energizing and unique fragrance.',175,3);
 	
 	-- Sport
 	INSERT INTO products(product_id,name,description,price,category_id) VALUES(8,'Hexagonal Rubber Dumbbell 35 Lb (15 Kg) Gym Crossfit 1 Pc Black','A fixed hexagonal dumbbell can help you perform a variety of fitness exercises, especially for training your biceps and triceps.', 679, 4);
@@ -184,6 +185,7 @@ BEGIN
 	quantity INT NOT NULL,
 	transaction_at SMALLDATETIME NOT NULL DEFAULT(GETDATE()),
 	transaction_type VARCHAR(100) NOT NULL,
+	product_id INT NOT NULL,
 	CONSTRAINT transaction_pk PRIMARY KEY(transaction_id),
 	CONSTRAINT transaction_type_check CHECK(transaction_type IN ('Selled','Shrinkage','Discontinued'))
 	);
