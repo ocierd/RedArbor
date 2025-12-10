@@ -3,7 +3,9 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using RedArbor.Application.Common.Interfaces;
+using RedArbor.Application.Common.Interfaces.Repository;
 using RedArbor.Infrastructure.Data;
+using RedArbor.Infrastructure.Data.Repository;
 
 namespace Microsoft.Extensions.DependencyInjection;
 
@@ -21,6 +23,13 @@ public static class DependencyInjection
         {
             opts.UseSqlServer(connectionString);
         });
+
+        
+        services.AddSingleton(opts=> configuration);
+
+        // Register DapperContext and Repositories
+        services.AddScoped<IDapperContext, DapperContext>();
+        services.AddScoped<IProductRepository, ProductRepository>();
 
         return services;
     }
