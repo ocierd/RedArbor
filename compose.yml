@@ -31,6 +31,26 @@ services:
       retries: 3
       start_period: 40s
 
+  redarbor-webapi:
+    build:
+      context: ./src/
+      dockerfile: Dockerfile
+    container_name: redarbor-webapi
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - ConnectionStrings__Products=Server=db;Initial Catalog=products_db;User Id=sa;Password=Passw0rd;TrustServerCertificate=True;
+    ports:
+      - "5000:8080"
+    # depends_on:
+    #   db:
+    networks:
+      - redarbor-network
+    restart: unless-stopped
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "30"
 
 
 volumes:
