@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace RedArbor.WebApi.Controllers;
@@ -12,6 +13,7 @@ public class WeatherForecastController : ControllerBase
     ];
 
     [HttpGet]
+    [AllowAnonymous]
     public IEnumerable<WeatherForecast> Get()
     {
         return [..Enumerable.Range(1, 5).Select(index => new WeatherForecast

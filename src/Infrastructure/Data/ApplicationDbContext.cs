@@ -1,7 +1,9 @@
 using System.Reflection;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using RedArbor.Application.Common.Interfaces;
 using RedArbor.Domain.Entities;
+using RedArbor.Infrastructure.Identity;
 
 namespace RedArbor.Infrastructure.Data;
 
@@ -10,7 +12,7 @@ namespace RedArbor.Infrastructure.Data;
 /// </summary>
 /// <param name="options">Options for DbContext configuration</param>
 public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
-: DbContext(options), IApplicationDbContext
+: IdentityDbContext<AppUser>(options), IApplicationDbContext
 {
     /// <summary>
     /// DbSet for Products

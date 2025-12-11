@@ -37,3 +37,10 @@ docker compose down
 
 ### WebApi instructions
 * Swagger has been exposed in production mode as documentation purposes, this could be checked in  `http://localhost:5000/swagger` (or `http://localhost:5076/swagger` in development mode)
+
+
+* Login in `AuthController` in `Authentication` endpoint for changes credentials for JWT
+    * User credentials:
+        > username:`Admin` &
+        > password:`password`
+    * The JWT should be included in each endpoint, unless the endpoint uses `AllowAnonymous` attribute

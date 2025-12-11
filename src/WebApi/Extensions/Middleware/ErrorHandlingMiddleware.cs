@@ -34,6 +34,13 @@ public class ErrorHandlingMiddleware(RequestDelegate next, ILogger<ErrorHandling
             context.Response.ContentType = MediaTypeNames.Application.Json;
             await JsonSerializer.SerializeAsync(context.Response.Body, new { ex.Message });
         }
+        catch (UnauthorizedException ex)
+        {
+            _logger.LogWarning("Unauthorized error: {Message}", ex.Message);
+            context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+            context.Response.ContentType = MediaTypeNames.Application.Json;
+            await JsonSerializer.SerializeAsync(context.Response.Body, new { Message = "Unauthorized access" });
+        }
         catch (Exception ex)
         {
             _logger.LogError(ex, "An unexpected error occurred.");
@@ -41,5 +48,7 @@ public class ErrorHandlingMiddleware(RequestDelegate next, ILogger<ErrorHandling
             context.Response.ContentType = MediaTypeNames.Application.Json;
             await JsonSerializer.SerializeAsync(context.Response.Body, new { Message = "An unexpected error occurred." });
         }
+
+
     }
 }

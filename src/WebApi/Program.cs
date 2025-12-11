@@ -2,17 +2,21 @@ namespace RedArbor.WebApi;
 
 public class Program
 {
-    public static void Main(string[] args)
+    public static async Task Main(string[] args)
     {
         var builder = WebApplication.CreateBuilder(args);
 
 
         // Added application and infrastructure layers
         builder.Services.AddWebApiServices();
+        builder.Services.AddAuthenticationJwt(builder.Configuration);
         builder.Services.AddInfrastructure(builder.Configuration);
         builder.Services.AddApplication();
+        
 
         var app = builder.Build();
+
+        // await app.InitializeData();
 
         // Configure the HTTP request pipeline.
         // if (app.Environment.IsDevelopment())
@@ -28,10 +32,10 @@ public class Program
 
 
         app.UseHttpsRedirection();
-
+        
+        app.UseAuthentication();
         app.UseAuthorization();
-
-
+        
         app.MapControllers();
 
         app.Run();

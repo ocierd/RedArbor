@@ -6,6 +6,8 @@ dotnet new webapi --name RedArbor.WebApi --output WebApi  --use-controllers --us
 dotnet sln add WebApi
 dotnet add WebApi package Swashbuckle.AspNetCore
 
+
+
 # Domain project
 dotnet new classlib --name RedArbor.Domain --output Domain
 dotnet sln add Domain
@@ -32,6 +34,9 @@ dotnet add Infrastructure package Microsoft.EntityFrameworkCore.SqlServer
 # Infrastructure project reference
 dotnet add Infrastructure reference Application
 dotnet add Infrastructure package Dapper
+dotnet add Infrastructure package Microsoft.AspNetCore.Authentication.JwtBearer
+dotnet add Infrastructure package Microsoft.AspNetCore.Identity.UI
+dotnet add Infrastructure package Microsoft.AspNetCore.Identity.EntityFrameworkCore
 
 
 # WebApi project references
