@@ -15,13 +15,13 @@ public class Program
         var app = builder.Build();
 
         // Configure the HTTP request pipeline.
-        if (app.Environment.IsDevelopment())
-        {
+        // if (app.Environment.IsDevelopment())
+        // {
             app.MapOpenApi();
             app.UseSwagger();
             app.UseSwaggerUI();
 
-        }
+        // }
 
         // Added middlewares for error handling and others
         app.UseMiddlewares();

@@ -8,8 +8,9 @@ COPY WebApi/*.csproj "./WebApi/"
 COPY Application/*.csproj "./Application/"
 COPY Domain/*.csproj "./Domain/"
 COPY Infrastructure/*.csproj "./Infrastructure/"
-RUN dotnet restore "./WebApi/RedArbor.WebApi.csproj"
 COPY . .
+RUN dotnet restore "./WebApi/RedArbor.WebApi.csproj"
+
 
 
 # Copy the rest of the application code
