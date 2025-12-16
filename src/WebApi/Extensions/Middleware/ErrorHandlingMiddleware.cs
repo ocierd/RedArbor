@@ -41,6 +41,13 @@ public class ErrorHandlingMiddleware(RequestDelegate next, ILogger<ErrorHandling
             context.Response.ContentType = MediaTypeNames.Application.Json;
             await JsonSerializer.SerializeAsync(context.Response.Body, new { Message = "Unauthorized access" });
         }
+        catch (ForbiddenAccessException ex)
+        {
+            _logger.LogWarning("Forbidden access error: {Message}", ex.Message);
+            context.Response.StatusCode = StatusCodes.Status403Forbidden;
+            context.Response.ContentType = MediaTypeNames.Application.Json;
+            await JsonSerializer.SerializeAsync(context.Response.Body, new { Message = "Forbidden access" });
+        }
         catch (Exception ex)
         {
             _logger.LogError(ex, "An unexpected error occurred.");

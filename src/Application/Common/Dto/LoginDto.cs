@@ -1,5 +1,4 @@
-namespace RedArbor.Application.Dto;
-
+namespace RedArbor.Application.Common.Dto;
 /// <summary>
 /// Data Transfer Object for user login
 /// </summary>

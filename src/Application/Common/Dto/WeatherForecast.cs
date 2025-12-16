@@ -1,4 +1,4 @@
-namespace RedArbor.WebApi;
+namespace RedArbor.Application.Common.Dto;
 
 public class WeatherForecast
 {

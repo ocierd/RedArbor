@@ -1,5 +1,5 @@
 
-namespace RedArbor.Application.Dto;
+namespace RedArbor.Application.Common.Dto;
 
 public class TokenDto
 {

@@ -8,6 +8,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using RedArbor.Application.Common.Interfaces;
 using RedArbor.Application.Common.Interfaces.Repository;
+using RedArbor.Domain.Constants;
 using RedArbor.Infrastructure.Data;
 using RedArbor.Infrastructure.Data.Repository;
 using RedArbor.Infrastructure.Identity;
@@ -32,15 +33,17 @@ public static class DependencyInjection
         services.AddSingleton(opts => configuration);
 
         // services.AddScoped<UserApplicationInitializer>();
-        // services.AddDefaultIdentity<AppUser>()
-        // .AddRoles<IdentityRole>()
-        // .AddEntityFrameworkStores<ApplicationDbContext>();
+        services.AddDefaultIdentity<AppUser>()
+        .AddRoles<IdentityRole>()
+        .AddEntityFrameworkStores<ApplicationDbContext>();
 
         // Register DapperContext and Repositories
         services.AddScoped<IDapperContext, DapperContext>();
         services.AddScoped<IProductRepository, ProductRepository>();
 
         services.AddScoped<IIdentityService, IdentityService>();
+        services.AddAuthorizationBuilder()
+        .AddPolicy(Policies.CanGetAllProducts, policy => policy.RequireRole(Roles.Administrator));
 
         return services;
     }

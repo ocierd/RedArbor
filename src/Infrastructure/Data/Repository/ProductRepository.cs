@@ -2,7 +2,7 @@ using System.Threading.Tasks;
 using Dapper;
 using RedArbor.Application.Common.Interfaces;
 using RedArbor.Application.Common.Interfaces.Repository;
-using RedArbor.Application.Dto;
+using RedArbor.Application.Common.Dto;
 
 namespace RedArbor.Infrastructure.Data.Repository;
 

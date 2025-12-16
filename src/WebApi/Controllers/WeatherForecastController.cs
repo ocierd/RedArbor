@@ -1,26 +1,20 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using RedArbor.Application.WeatherForecasts.Query;
 
 namespace RedArbor.WebApi.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class WeatherForecastController : ControllerBase
+public class WeatherForecastController(IMediator mediator) : ControllerBase
 {
-    private static readonly string[] Summaries =
-    [
-        "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-    ];
+    private readonly IMediator _mediator = mediator;
 
     [HttpGet]
     [AllowAnonymous]
-    public IEnumerable<WeatherForecast> Get()
+    public async Task<IEnumerable<WeatherForecast>> Get()
     {
-        return [..Enumerable.Range(1, 5).Select(index => new WeatherForecast
-        {
-            Date = DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-            TemperatureC = Random.Shared.Next(-20, 55),
-            Summary = Summaries[Random.Shared.Next(Summaries.Length)]
-        })];
+        var res = await _mediator.Send(new WeatherForecastGetAllQuery());
+        return res;
     }
 }

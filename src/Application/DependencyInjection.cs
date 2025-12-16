@@ -1,4 +1,6 @@
-﻿namespace Microsoft.Extensions.DependencyInjection;
+﻿using Redarbor.Application.Common.Behaviours;
+
+namespace Microsoft.Extensions.DependencyInjection;
 
 public static class DependencyInjection
 {
@@ -11,8 +13,14 @@ public static class DependencyInjection
     {
 
         // services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(DependencyInjection).Assembly));
-        services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(AppDomain.CurrentDomain.GetAssemblies()));
-    
+        services.AddMediatR(cfg =>
+        {
+            cfg.RegisterServicesFromAssemblies(AppDomain.CurrentDomain.GetAssemblies());
+
+            cfg.AddOpenBehavior(typeof(AuthorizationBehaviour<,>));
+
+        });
+
         return services;
     }
 }

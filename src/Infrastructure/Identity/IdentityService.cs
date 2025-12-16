@@ -1,10 +1,12 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using RedArbor.Application.Common.Interfaces;
-using RedArbor.Application.Dto;
+using RedArbor.Application.Common.Dto;
 using RedArbor.Domain.Constants;
 
 namespace RedArbor.Infrastructure.Identity;
@@ -17,13 +19,17 @@ public class IdentityService : IIdentityService
     private IConfigurationSection _jwtSettings
     {
         get => _configuration.GetSection("Jwt");
-    } 
+    }
 
     private readonly string _jwtKey;
     private readonly double _tokenExpireMinutes;
     private readonly double _refreshTokenExpireMinutes;
 
-    public IdentityService(IConfiguration configuration)
+    private readonly IUserClaimsPrincipalFactory<AppUser> _userClaimsPrincipalFactory;
+    private readonly IAuthorizationService _authorizationService;
+
+    public IdentityService(IConfiguration configuration, IUserClaimsPrincipalFactory<AppUser> userClaimsPrincipalFactory,
+        IAuthorizationService authorizationService)
     {
         _configuration = configuration;
         _jwtKey = _jwtSettings["Key"]
@@ -32,6 +38,9 @@ public class IdentityService : IIdentityService
             ?? throw new InvalidOperationException("JWT ExpireMinutes is not configured."));
         _refreshTokenExpireMinutes = double.Parse(_jwtSettings["RefreshTokenExpireMinutes"]
             ?? throw new InvalidOperationException("JWT RefreshTokenExpireMinutes is not configured."));
+
+        _userClaimsPrincipalFactory = userClaimsPrincipalFactory;
+        _authorizationService = authorizationService;
     }
 
     public string GetUserId()
@@ -70,10 +79,13 @@ public class IdentityService : IIdentityService
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtKey));
 
         var claims = new[]
-        {
-            new Claim(JwtRegisteredClaimNames.Sub, username),
-            new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-            new Claim(ClaimTypes.Role, role)
+        {            
+            // new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+            new Claim(ClaimTypes.NameIdentifier, Guid.NewGuid().ToString()),
+            // new Claim(JwtRegisteredClaimNames.Sub, username),
+            new Claim(ClaimTypes.Name, username),
+            new Claim(ClaimTypes.Role, role),
+            new Claim(ClaimTypes.Role, "Otro rol")
         };
 
         var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
@@ -87,5 +99,28 @@ public class IdentityService : IIdentityService
         );
 
         return new JwtSecurityTokenHandler().WriteToken(token);
+    }
+
+
+
+
+
+    public async Task<bool> AuthorizeAsync(string userId, string policyName)
+    {
+        var user = new AppUser
+        {
+            Id = userId
+        };
+
+        if (user == null)
+        {
+            return false;
+        }
+
+        var principal = await _userClaimsPrincipalFactory.CreateAsync(user);
+
+        var result = await _authorizationService.AuthorizeAsync(principal, policyName);
+
+        return result.Succeeded;
     }
 }

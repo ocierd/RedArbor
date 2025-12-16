@@ -1,9 +1,8 @@
-using System.Text;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Authorization;
-using Microsoft.IdentityModel.Tokens;
+using RedArbor.Application.Common.Interfaces;
 using RedArbor.Infrastructure.Data;
+using RedArbor.WebApi.Services;
 
 namespace Microsoft.Extensions.DependencyInjection;
 
@@ -21,7 +20,8 @@ public static class DependencyInjection
             opts.Filters.Add(new AuthorizeFilter(policy));
         });
 
-        
+        services.AddHttpContextAccessor();
+        services.AddScoped<IUser, CurrentUser>();
 
         // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
         services.AddOpenApi();
