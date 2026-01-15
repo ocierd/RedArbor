@@ -48,7 +48,7 @@ docker compose down
 
 *   Most endpoints must be requested with authorize header, and the next endpoints should have explicity authorization "Roles" and "Policies"
     * api/Products
-        * Must be requested by `Administrator` role and comply with the `CanCheckoutProduct` policy.
+        * Must be requested by `Administrator` role and comply with the `CanGetAllProducts` policy.
     * api/Inventory/checkout 
         * This endpoint mus be requested by `Adminmistrator` or `InventoryManager` and comply with the `CanCheckoutProduct` policy.
     * Other endpoints only require the user to be authenticated
