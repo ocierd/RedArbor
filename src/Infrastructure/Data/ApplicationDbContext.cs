@@ -12,7 +12,7 @@ namespace RedArbor.Infrastructure.Data;
 /// </summary>
 /// <param name="options">Options for DbContext configuration</param>
 public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
-: IdentityDbContext<AppUser>(options), IApplicationDbContext
+: IdentityDbContext<AppUser,AppRole,string>(options), IApplicationDbContext
 {
     /// <summary>
     /// DbSet for Products

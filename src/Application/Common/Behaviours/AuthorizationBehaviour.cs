@@ -5,28 +5,47 @@ using RedArbor.Application.Common.Security;
 
 namespace Redarbor.Application.Common.Behaviours;
 
-public class AuthorizationBehaviour<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
-     where TRequest : IRequest<TResponse>
+/// <summary>
+/// Authorization behavior for MediatR pipeline
+/// </summary>
+/// <typeparam name="TRequest"></typeparam>
+/// <typeparam name="TResponse"></typeparam>
+/// <param name="identityService"></param>
+/// <param name="user"></param>
+/// <param name="logger"></param>
+public class AuthorizationBehaviour<TRequest, TResponse>(
+    IIdentityService identityService,
+    IUser user,
+    ILogger<AuthorizationBehaviour<TRequest, TResponse>> logger)
+    : IPipelineBehavior<TRequest, TResponse> where TRequest : IRequest<TResponse>
 {
-    private readonly IIdentityService _identityService;
+    /// <summary>
+    /// Identity service for authorization checks
+    /// </summary>
+    private readonly IIdentityService _identityService = identityService;
 
-    private readonly IUser _user;
+    /// <summary>
+    /// Authenticated user information
+    /// </summary>
+    private readonly IUser _user = user;
 
-    private readonly ILogger<AuthorizationBehaviour<TRequest, TResponse>> _logger;
+    /// <summary>
+    /// Logger instance
+    /// </summary>
+    private readonly ILogger<AuthorizationBehaviour<TRequest, TResponse>> _logger = logger;
 
-
-    public AuthorizationBehaviour(IIdentityService identityService, IUser user, ILogger<AuthorizationBehaviour<TRequest, TResponse>> logger)
-    {
-        _identityService = identityService;
-        _user = user;
-        _logger = logger;
-    }
-
-
+    /// <summary>
+    /// Handle method for authorization
+    /// </summary>
+    /// <param name="request"> Request to be authorized </param>
+    /// <param name="next"> Next handler in the pipeline </param>
+    /// <param name="cancellationToken"> Cancellation token </param>
+    /// <returns> Response from the next handler in the pipeline </returns>
+    /// <exception cref="UnauthorizedException"> Exception thrown when user is not authenticated and it's required </exception>
+    /// <exception cref="ForbiddenAccessException">Forbidden thrown when user is authenticated but lacks required permissions or the policy is not met</exception>
     public async Task<TResponse> Handle(TRequest request, RequestHandlerDelegate<TResponse> next, CancellationToken cancellationToken)
     {
         // Authorization logic can be added here in the future
-
         try
         {
 
@@ -82,6 +101,8 @@ public class AuthorizationBehaviour<TRequest, TResponse> : IPipelineBehavior<TRe
             {
                 foreach (var policy in authorizeAttributesWithPolicies.Select(a => a.Policy))
                 {
+                    if (policy == null) continue;
+
                     var authorized = await _identityService.AuthorizeAsync(_user.UserId, policy);
 
                     if (!authorized)

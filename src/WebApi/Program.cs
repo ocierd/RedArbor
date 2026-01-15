@@ -21,9 +21,9 @@ public class Program
         // Configure the HTTP request pipeline.
         // if (app.Environment.IsDevelopment())
         // {
-            app.MapOpenApi();
-            app.UseSwagger();
-            app.UseSwaggerUI();
+        app.MapOpenApi();
+        app.UseSwagger();
+        app.UseSwaggerUI();
 
         // }
 
@@ -32,10 +32,10 @@ public class Program
 
 
         app.UseHttpsRedirection();
-        
+
         app.UseAuthentication();
         app.UseAuthorization();
-        
+
         app.MapControllers();
 
         app.Run();

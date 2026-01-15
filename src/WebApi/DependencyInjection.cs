@@ -6,8 +6,16 @@ using RedArbor.WebApi.Services;
 
 namespace Microsoft.Extensions.DependencyInjection;
 
+/// <summary>
+/// Dependency injection for Web API layer
+/// </summary>
 public static class DependencyInjection
 {
+    /// <summary>
+    /// Add Web API services to the container
+    /// </summary>
+    /// <param name="services"> Service collection to add services to </param>
+    /// <returns> Service collection with added services </returns>
     public static IServiceCollection AddWebApiServices(this IServiceCollection services)
     {
         // Add services to the container.

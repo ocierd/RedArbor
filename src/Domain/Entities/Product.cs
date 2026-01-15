@@ -1,5 +1,8 @@
 namespace RedArbor.Domain.Entities;
 
+/// <summary>
+/// Product entity
+/// </summary>
 public class Product
 {
     public int ProductId { get; set; }

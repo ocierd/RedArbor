@@ -1,5 +1,8 @@
 namespace RedArbor.Domain.Entities;
 
+/// <summary>
+/// Category entity
+/// </summary>
 public class Category
 {
 

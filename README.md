@@ -39,8 +39,16 @@ docker compose down
 * Swagger has been exposed in production mode as documentation purposes, this could be checked in  `http://localhost:5000/swagger` (or `http://localhost:5076/swagger` in development mode)
 
 
-* Login in `AuthController` in `Authentication` endpoint for changes credentials for JWT
+* Login in `AuthController` in `Authenticate` endpoint for changes credentials for JWT
     * User credentials:
-        > username:`Admin` &
-        > password:`password`
+        * username:`admin`, password:`Password123!`, roles:[`Administrator`,`InventoryManager`]
+        * username:`user1` & password: `Password123!`, roles: [`User`]
+        * username: `inventoryManager`, password:`Password123!`, roles:[`InventoryManager`]
     * The JWT should be included in each endpoint, unless the endpoint uses `AllowAnonymous` attribute
+
+*   Most endpoints must be requested with authorize header, and the next endpoints should have explicity authorization "Roles" and "Policies"
+    * api/Products
+        * Must be requested by `Administrator` role and comply with the `CanCheckoutProduct` policy.
+    * api/Inventory/checkout 
+        * This endpoint mus be requested by `Adminmistrator` or `InventoryManager` and comply with the `CanCheckoutProduct` policy.
+    * Other endpoints only require the user to be authenticated

@@ -9,4 +9,6 @@ public class Policies
 
     public const string CanGetAllProducts = nameof(CanGetAllProducts);
 
+    public const string CanCheckoutProduct = nameof(CanCheckoutProduct);
+
 }

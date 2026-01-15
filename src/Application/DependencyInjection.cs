@@ -2,6 +2,9 @@
 
 namespace Microsoft.Extensions.DependencyInjection;
 
+/// <summary>
+/// Dependency injection for Application layer
+/// </summary>
 public static class DependencyInjection
 {
     /// <summary>

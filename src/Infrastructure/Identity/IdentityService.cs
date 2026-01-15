@@ -28,8 +28,26 @@ public class IdentityService : IIdentityService
     private readonly IUserClaimsPrincipalFactory<AppUser> _userClaimsPrincipalFactory;
     private readonly IAuthorizationService _authorizationService;
 
-    public IdentityService(IConfiguration configuration, IUserClaimsPrincipalFactory<AppUser> userClaimsPrincipalFactory,
-        IAuthorizationService authorizationService)
+    private readonly IUserStore<AppUser> _userStore;
+    // private readonly IRoleStore<AppRole> _roleStore;
+    // private readonly IUserRoleStore<AppUser> _userRoleStore;
+
+
+    private readonly UserManager<AppUser> _userManager;
+    private readonly RoleManager<AppRole> _roleManager;
+
+    public IdentityService(IConfiguration configuration,
+        IUserClaimsPrincipalFactory<AppUser> userClaimsPrincipalFactory,
+        IAuthorizationService authorizationService,
+
+        IUserStore<AppUser> userStore,
+        // IRoleStore<AppRole> roleStore,
+        // IUserRoleStore<AppUser> userRoleStore,
+
+        RoleManager<AppRole> roleManager,
+        UserManager<AppUser> userManager
+
+        )
     {
         _configuration = configuration;
         _jwtKey = _jwtSettings["Key"]
@@ -41,6 +59,13 @@ public class IdentityService : IIdentityService
 
         _userClaimsPrincipalFactory = userClaimsPrincipalFactory;
         _authorizationService = authorizationService;
+
+        _userStore = userStore;
+        // _roleStore = roleStore;
+        // _userRoleStore = userRoleStore;
+
+        _roleManager = roleManager;
+        _userManager = userManager;
     }
 
     public string GetUserId()
@@ -48,45 +73,32 @@ public class IdentityService : IIdentityService
         throw new NotImplementedException();
     }
 
-    public TokenDto GenerateToken(LoginDto loginDto)
+    public async Task<TokenDto> GenerateToken(LoginDto loginDto)
     {
-        if (loginDto.Username == "admin" && loginDto.Password == "password")
+        var user = await GetUser(loginDto.Username, loginDto.Password);
+        return new TokenDto
         {
-            return new TokenDto
-            {
-                Token = GenerateJwtToken(loginDto.Username, Roles.Administrator, _tokenExpireMinutes),
-                ExpiresIn = _tokenExpireMinutes,
-                RefreshToken = GenerateJwtToken(loginDto.Username, Roles.Administrator, _refreshTokenExpireMinutes),
-                RefreshTokenExpiresIn = _refreshTokenExpireMinutes
-            };
-        }
-        else if (loginDto.Username == "user1" && loginDto.Password == "password")
-        {
-            return new TokenDto
-            {
-                Token = GenerateJwtToken(loginDto.Username, Roles.User, _tokenExpireMinutes),
-                ExpiresIn = _tokenExpireMinutes,
-                RefreshToken = GenerateJwtToken(loginDto.Username, Roles.User, _refreshTokenExpireMinutes),
-                RefreshTokenExpiresIn = _refreshTokenExpireMinutes
-            };
-        }
+            Token = GenerateJwtToken(user, _tokenExpireMinutes),
+            ExpiresIn = _tokenExpireMinutes,
+            RefreshToken = GenerateJwtToken(user, _refreshTokenExpireMinutes),
+            RefreshTokenExpiresIn = _refreshTokenExpireMinutes
+        };
 
-        throw new UnauthorizedAccessException("Invalid credentials");
     }
 
-    private string GenerateJwtToken(string username, string role, double expireMinutes)
+    private string GenerateJwtToken(AppUser user, double expireMinutes)
     {
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtKey));
 
-        var claims = new[]
-        {            
-            // new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-            new Claim(ClaimTypes.NameIdentifier, Guid.NewGuid().ToString()),
-            // new Claim(JwtRegisteredClaimNames.Sub, username),
-            new Claim(ClaimTypes.Name, username),
-            new Claim(ClaimTypes.Role, role),
-            new Claim(ClaimTypes.Role, "Otro rol")
-        };
+        List<Claim> claims = [
+            new Claim(ClaimTypes.NameIdentifier, user.Id),
+            new Claim(ClaimTypes.Name, user.UserName!)
+        ];
+
+        foreach (var role in user.Roles)
+        {
+            claims.Add(new Claim(ClaimTypes.Role, role.Name!));
+        }
 
         var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
@@ -107,15 +119,16 @@ public class IdentityService : IIdentityService
 
     public async Task<bool> AuthorizeAsync(string userId, string policyName)
     {
-        var user = new AppUser
-        {
-            Id = userId
-        };
+        var user = await _userStore.FindByIdAsync(userId, CancellationToken.None);
+
 
         if (user == null)
         {
             return false;
         }
+
+        // await InitData(user);
+
 
         var principal = await _userClaimsPrincipalFactory.CreateAsync(user);
 
@@ -123,4 +136,22 @@ public class IdentityService : IIdentityService
 
         return result.Succeeded;
     }
+
+    private async Task<AppUser> GetUser(string userName, string password)
+    {
+        AppUser? appUser = await _userStore.FindByNameAsync(userName.ToUpperInvariant(),
+        CancellationToken.None);
+
+        if (appUser == null || appUser.PasswordHash != password)
+        {
+            throw new UnauthorizedAccessException("Invalid credentials");
+        }
+        return appUser;
+    }
+
+
+
 }
+
+
+

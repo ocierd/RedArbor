@@ -1,5 +1,4 @@
-﻿// namespace RedArbor.Infrastructure;
-
+﻿using System.Security.Claims;
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
@@ -18,12 +17,21 @@ namespace Microsoft.Extensions.DependencyInjection;
 public static class DependencyInjection
 {
 
+    /// <summary>
+    /// Add Infrastructure services
+    /// </summary>
+    /// <param name="services">Collection of services</param>
+    /// <param name="configuration">Configuration</param>
+    /// <returns> The services collection </returns>
+    /// <exception cref="ArgumentException"></exception>
     public static IServiceCollection AddInfrastructure(this IServiceCollection services
     , IConfiguration configuration)
     {
         string connectionName = "Products";
         string connectionString = configuration.GetConnectionString(connectionName)
-            ?? throw new ArgumentException("Connection string not found.", nameof(connectionName));
+            ?? throw new ArgumentException($"Connection string {connectionName} not found.");
+
+
 
         services.AddDbContext<IApplicationDbContext, ApplicationDbContext>(opts =>
         {
@@ -32,18 +40,38 @@ public static class DependencyInjection
 
         services.AddSingleton(opts => configuration);
 
+
         // services.AddScoped<UserApplicationInitializer>();
+        services.AddScoped<IUserStore<AppUser>, AppUserStore>();
+        // services.AddScoped<IRoleStore<AppRole>, AppRolesStore>();
+        // services.AddScoped<IUserRoleStore<AppUser>, AppUserRolesStore>();
+
         services.AddDefaultIdentity<AppUser>()
-        .AddRoles<IdentityRole>()
-        .AddEntityFrameworkStores<ApplicationDbContext>();
+        .AddUserStore<AppUserStore>()
+        .AddRoles<AppRole>()
+        .AddRoleStore<AppRolesStore>()
+        .AddClaimsPrincipalFactory<AppUserClaimsPrincipalFactory>();
+        
+        // .AddEntityFrameworkStores<ApplicationDbContext>();
 
         // Register DapperContext and Repositories
         services.AddScoped<IDapperContext, DapperContext>();
         services.AddScoped<IProductRepository, ProductRepository>();
+        services.AddScoped<IInventoryRepository, InventoryRepository>();
 
         services.AddScoped<IIdentityService, IdentityService>();
         services.AddAuthorizationBuilder()
-        .AddPolicy(Policies.CanGetAllProducts, policy => policy.RequireRole(Roles.Administrator));
+        .AddPolicy(Policies.CanGetAllProducts, policy =>
+        {
+            policy.RequireAuthenticatedUser();
+            policy.RequireClaim(ClaimTypes.Role, Roles.Administrator);
+
+        })
+        .AddPolicy(Policies.CanCheckoutProduct, policy =>
+        {
+            policy.RequireAuthenticatedUser();
+            policy.RequireClaim(ClaimTypes.Role, Roles.Administrator, Roles.InventoryManager);
+        });
 
         return services;
     }

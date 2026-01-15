@@ -8,9 +8,15 @@ public class LoginHandler(IIdentityService identityService) : IRequestHandler<Lo
 {
     private readonly IIdentityService _identityService = identityService;
 
+    /// <summary>
+    /// Handles the LoginQuery to authenticate a user and generate a token
+    /// </summary>
+    /// <param name="request">Request containing login credentials</param>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
     public async Task<TokenDto> Handle(LoginQuery request, CancellationToken cancellationToken)
     {
-        var token = _identityService.GenerateToken(new LoginDto
+        var token = await _identityService.GenerateToken(new LoginDto
         {
             Username = request.Username,
             Password = request.Password
