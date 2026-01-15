@@ -190,3 +190,61 @@ BEGIN
 	CONSTRAINT transaction_type_check CHECK(transaction_type IN ('Selled','Shrinkage','Discontinued'))
 	);
 END
+
+
+-----------------------------------------------------
+------------------ CheckoutProduct ------------------
+-----------------------------------------------------
+-- Stored Procedure to checkout products
+-- It will reduce the inventory and create a transaction record
+CREATE OR ALTER PROCEDURE CheckoutProduct(
+	@productId INT,
+	@quantity INT,
+	@transaction_type VARCHAR(100)
+)
+AS
+BEGIN
+	DECLARE @AVAILABLE_QUANTITY INT = 0;
+	DECLARE @ErrorMessage NVARCHAR(4000), @ErrorSeverity INT, @ErrorState INT;
+
+	
+	BEGIN TRY
+		BEGIN TRANSACTION;
+	
+			SELECT @AVAILABLE_QUANTITY=quantity FROM inventory WHERE product_id = @productId;
+
+			IF(@AVAILABLE_QUANTITY<=0)
+			BEGIN
+				RAISERROR('No hay artículos disponibles en el inventario',15,1);
+			END
+			
+			
+			IF(@AVAILABLE_QUANTITY<@quantity)
+			BEGIN
+				RAISERROR('No existe inventario suficiente',15,1);
+			END
+
+			UPDATE inventory SET quantity = quantity - @quantity, updated_at=GETDATE()  WHERE product_id = @productId;
+			
+			INSERT INTO transactions(quantity,transaction_type,product_id) 
+			VALUES(@quantity,@transaction_type,@productId);
+	
+	
+		COMMIT TRANSACTION;
+	END TRY
+	BEGIN CATCH
+		
+		ROLLBACK TRANSACTION;
+		
+	  	SELECT
+        @ErrorMessage = ERROR_MESSAGE(),
+        @ErrorSeverity = ERROR_SEVERITY(),
+        @ErrorState = ERROR_STATE();
+	  	
+	  	
+	  	PRINT @ErrorMessage;
+	  	
+	    RAISERROR(@ErrorMessage, 15, @ErrorState);
+	END CATCH
+	
+END
