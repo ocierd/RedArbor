@@ -3,11 +3,11 @@ FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
 WORKDIR /src
 
 # Copy the project files and restore dependencies
-COPY *.sln .
-COPY WebApi/*.csproj "./WebApi/"
-COPY Application/*.csproj "./Application/"
-COPY Domain/*.csproj "./Domain/"
-COPY Infrastructure/*.csproj "./Infrastructure/"
+# COPY *.sln .
+# COPY WebApi/*.csproj "./WebApi/"
+# COPY Application/*.csproj "./Application/"
+# COPY Domain/*.csproj "./Domain/"
+# COPY Infrastructure/*.csproj "./Infrastructure/"
 COPY . .
 RUN dotnet restore "./WebApi/RedArbor.WebApi.csproj"
 
