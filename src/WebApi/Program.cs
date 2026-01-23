@@ -12,7 +12,19 @@ public class Program
         builder.Services.AddAuthenticationJwt(builder.Configuration);
         builder.Services.AddInfrastructure(builder.Configuration);
         builder.Services.AddApplication();
-        
+
+        // CORS policy name
+        const string AllowSpecificOrigins = "_SpecificOrigins";
+
+        builder.Services.AddCors(options =>
+        {
+            options.AddPolicy(AllowSpecificOrigins, builder =>
+            {
+                builder.WithOrigins("*")
+                       .WithMethods("*")
+                       .WithHeaders("*");
+            });
+        });
 
         var app = builder.Build();
 
@@ -30,8 +42,9 @@ public class Program
         // Added middlewares for error handling and others
         app.UseMiddlewares();
 
+        app.UseCors(AllowSpecificOrigins);
 
-        app.UseHttpsRedirection();
+        // app.UseHttpsRedirection();
 
         app.UseAuthentication();
         app.UseAuthorization();

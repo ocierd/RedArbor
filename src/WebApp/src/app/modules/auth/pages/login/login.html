@@ -1,0 +1,26 @@
+<p>
+    User login data:
+</p>
+
+<ul>
+    @for (uData of usersLoginData; track $index) {
+
+    <li>
+        Username: <strong>{{uData.username}}</strong> - Password: <strong>{{uData.password}}</strong> - Roles: <strong>[{{uData.roles}}]</strong>
+    </li>
+}
+</ul>
+
+
+
+
+<form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+    <label for="username">Username:</label>
+    <input id="username" formControlName="username" type="text" />
+
+    <label for="password">Password:</label>
+    <input id="password" formControlName="password" type="password" />
+
+    <button type="submit">Login</button>
+
+</form>
