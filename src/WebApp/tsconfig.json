@@ -18,7 +18,10 @@
       "@modules/*":["./src/app/modules/*"],
       "@models/*":["./src/app/shared/models/*"],
       "@services/*":["./src/app/core/services/*"],
-      "@ramodules/*":["./src/app/modules/redarbor/*"]
+      "@ramodules/*":["./src/app/modules/redarbor/*"],
+      
+
+      "@styles/*":["./src/styles/*"]
     }
   },
   "angularCompilerOptions": {
