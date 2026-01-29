@@ -1,8 +1,11 @@
-import { Component, inject } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Component, inject, signal, Signal, WritableSignal } from '@angular/core';
+import { AbstractControl, FormBuilder, FormGroup, ValidationErrors, Validators } from '@angular/forms';
+import { FieldTree, form, maxLength, minLength, required } from '@angular/forms/signals';
 import { Router } from '@angular/router';
 import { AuthService } from '@services/redarbor/auth-service';
 import { firstValueFrom } from 'rxjs';
+
+type loginForm = { username: string, password: string };
 
 @Component({
   selector: 'app-login',
@@ -12,8 +15,10 @@ import { firstValueFrom } from 'rxjs';
 })
 export class Login {
 
-  fb: FormBuilder = inject(FormBuilder);
-  authService: AuthService = inject(AuthService);
+  readonly fb: FormBuilder = inject(FormBuilder);
+  readonly authService: AuthService = inject(AuthService);
+  readonly router: Router = inject(Router);
+
 
   usersLoginData = [
     { username: 'admin', password: 'Password123!', roles: ['Administrator', 'InventoryManager'] },
@@ -21,21 +26,31 @@ export class Login {
     { username: 'inventoryManager', password: 'Password123!', roles: ['InventoryManager'] }
   ]
 
-  loginForm: FormGroup = this.fb.group({
-    username: ['admin', Validators.required],
-    password: ['Password123!', Validators.required]
+  loginData: WritableSignal<loginForm> = signal({ username: 'admin', password: 'Password123!' });
+
+  loginForm: FieldTree<loginForm> = form(this.loginData, opts => {
+    required(opts.username);
+    required(opts.password);
+    minLength(opts.username, 3);
+    maxLength(opts.username, 5);
+
   });
 
-  router: Router = inject(Router);
 
-
+  /**
+   * Handle form submission
+   */
   async onSubmit() {
 
     try {
-      const authToken = await firstValueFrom(this.authService.auth(this.loginForm.value));
+      
+      const data = this.loginForm().value();
+      console.log('Login data: ', data);
+      
+      const authToken = await firstValueFrom(this.authService.auth(data));
       this.authService.setLocalStorageToken(authToken);
       console.log("Login successful, token stored: ", authToken);
-      this.router.navigate(['/redarbor'],{ });
+      this.router.navigate(['/redarbor'], {});
     } catch (error) {
       console.error(error);
 

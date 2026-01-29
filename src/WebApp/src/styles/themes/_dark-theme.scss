@@ -1,0 +1,11 @@
+@use '@angular/material' as mat;
+
+.dark-theme {
+  @include mat.theme((color: (primary: mat.$blue-palette,
+        tertiary: mat.$cyan-palette,
+        theme-type: dark,
+      ),
+      typography: Arial,
+      density: 0,
+    ));
+}

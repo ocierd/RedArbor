@@ -31,7 +31,9 @@
               }
             ],
             "styles": [
-              "src/styles.scss"
+              "src/styles.scss",
+              "src/styles/global.scss",
+              "src/styles/bootstrap/bootstrap-grid.min.css"
             ]
           },
           "configurations": {

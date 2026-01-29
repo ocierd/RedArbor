@@ -1,2 +1,20 @@
-<p>main-layout works!</p>
-<router-outlet/>
+<!-- Theme selector begins -->
+<div class="d-flex justify-content-end">
+    <button matIconButton [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu">
+        <mat-icon>more_vert</mat-icon>
+    </button>
+</div>
+<mat-menu #menu="matMenu">
+    @for (theme of themes; track theme) {
+    <button mat-menu-item (click)="switchTheme(theme)">
+        <mat-radio-button [checked]="theme === currentTheme()"></mat-radio-button>
+        <!-- <mat-icon>notifications_off</mat-icon> -->
+        <span>{{theme}}</span>
+    </button>
+    }
+
+</mat-menu>
+
+<!-- Theme selector ends -->
+
+<router-outlet />

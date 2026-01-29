@@ -4,6 +4,10 @@ import { NgModule } from "@angular/core";
 import { MatFormFieldModule } from "@angular/material/form-field";
 import { MatOptionModule } from "@angular/material/core";
 import { MatInputModule } from "@angular/material/input";
+import { MatButtonModule } from "@angular/material/button";
+import { MatRadioModule } from "@angular/material/radio";
+import { MatIconModule } from "@angular/material/icon";
+import { MatMenuModule } from "@angular/material/menu";
 
 /**
  * Material Design components module
@@ -12,7 +16,11 @@ import { MatInputModule } from "@angular/material/input";
 const materialModules = [
     MatFormFieldModule,
     MatOptionModule,
-    MatInputModule
+    MatInputModule,
+    MatButtonModule,
+    MatRadioModule,
+    MatIconModule,
+    MatMenuModule
 ];
 
 @NgModule({
