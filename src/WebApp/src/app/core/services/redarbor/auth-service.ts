@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
-import { RedarborBaseService } from './redarbor-base-service';
 import { LoginData } from '@models/login.model';
 import { Observable } from 'rxjs';
 import { AuthToken } from '@models/auth.model';
 import { StorageService } from '../../../shared/services/storage-service';
+import { RedarborBaseService } from '@services/bases/redarbor-base-service';
 
 
 /**
@@ -48,9 +48,13 @@ export class AuthService extends RedarborBaseService {
  * Get token from local storage
    * @returns Get Local storage token
    */
-  getLocalStorageToken(): string | null {
-    return this.storageService
+  getLocalStorageToken(): AuthToken | null {
+    const token = this.storageService
       .getItem('auth_token');
+    if (token) {
+      return JSON.parse(token) as AuthToken;
+    }
+    return null;
   }
 
   /**
@@ -60,12 +64,8 @@ export class AuthService extends RedarborBaseService {
   isAuthenticated(): boolean {
     // Implement your logic to check if the user is authenticated
     const token = this.getLocalStorageToken();
-    if (token) {
-      const jwt = JSON.parse(token) as AuthToken;
-      if (jwt.token) {
+    if (token && token.token) {
         return true;
-      }
-      return false;
     }
     return false;
   }

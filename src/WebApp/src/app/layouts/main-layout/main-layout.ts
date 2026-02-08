@@ -1,8 +1,9 @@
-import { Component, inject } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { Component, inject, ViewChild } from '@angular/core';
+import { isActive, Router, RouterOutlet } from '@angular/router';
 import { MaterialModule } from '../../shared/material/material-module';
 import { ThemeService, ThemeType } from '../../shared/services/theme-service';
 import { FormsModule } from '@angular/forms';
+import { MatSidenav } from '@angular/material/sidenav';
 
 
 /**
@@ -22,6 +23,8 @@ export class MainLayout {
    */
   private themeService: ThemeService = inject(ThemeService);
 
+  private router: Router = inject(Router);
+
   /**
    * Available themes
    */
@@ -33,6 +36,22 @@ export class MainLayout {
   protected currentTheme = this.themeService.currentTheme;
 
 
+  list = [
+    { isActive: true, name: 'Dashboard', route: '/redarbor/home', icon: 'home' },
+    { isActive: false, name: 'Products', route: '/redarbor/products', icon: 'inventory' },
+    // {isActive:false, name:'Orders', route:'/redarbor/orders', icon:'shopping_cart'},
+    // {isActive:false, name:'Reports', route:'/redarbor/reports', icon:'bar_chart'},
+    // {isActive:false, name:'Settings', route:'/redarbor/settings', icon:'settings'},
+  ];
+
+  @ViewChild('sidenav') sidenav!: MatSidenav;
+  reason = '';
+
+  close(reason: string) {
+    this.reason = reason;
+    this.sidenav.close();
+  }
+
   /**
    * Switch the application theme
    * @param theme Changed theme
@@ -41,5 +60,12 @@ export class MainLayout {
     this.themeService.setCurrentTheme(theme);
   }
 
+  /**
+   * Navigate to specified route
+   * @param route Route to navigate
+   */
+  goToLink(route: string): void {
+    this.router.navigate([route]);
+  }
 
 }

@@ -1,9 +1,9 @@
 import { Component, inject, signal, Signal, WritableSignal } from '@angular/core';
-import { AbstractControl, FormBuilder, FormGroup, ValidationErrors, Validators } from '@angular/forms';
 import { FieldTree, form, maxLength, minLength, required } from '@angular/forms/signals';
 import { Router } from '@angular/router';
 import { AuthService } from '@services/redarbor/auth-service';
 import { firstValueFrom } from 'rxjs';
+import { DialogService } from '../../../../shared/services/dialog-service';
 
 type loginForm = { username: string, password: string };
 
@@ -15,9 +15,9 @@ type loginForm = { username: string, password: string };
 })
 export class Login {
 
-  readonly fb: FormBuilder = inject(FormBuilder);
   readonly authService: AuthService = inject(AuthService);
   readonly router: Router = inject(Router);
+  readonly dialogService = inject(DialogService);
 
 
   usersLoginData = [
@@ -53,6 +53,8 @@ export class Login {
       this.router.navigate(['/redarbor'], {});
     } catch (error) {
       console.error(error);
+      this.dialogService.openDialog("Ocurrió un error al iniciar sesión", { error });
+      
 
     }
     finally {

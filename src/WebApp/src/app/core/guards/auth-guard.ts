@@ -21,8 +21,5 @@ export const authGuard: CanActivateFn = (route, state) => {
   const router = inject(Router);
 
   const loginPath = router.parseUrl("/auth");
-  return new RedirectCommand(loginPath, {
-    skipLocationChange: true,
-  });
-
+  return loginPath;
 };

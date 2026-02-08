@@ -1,20 +1,55 @@
-<!-- Theme selector begins -->
-<div class="d-flex justify-content-end">
+<mat-toolbar>
+    <button matIconButton class="example-icon" aria-label="Example icon-button with menu icon"
+        (click)="sidenav.toggle()">
+        <mat-icon>menu</mat-icon>
+    </button>
+    <span>My App</span>
+    <span class="example-spacer"></span>
+    <button matIconButton class="example-icon favorite-icon" aria-label="Example icon-button with heart icon">
+        <mat-icon>favorite</mat-icon>
+    </button>
+    <button matIconButton class="example-icon" aria-label="Example icon-button with share icon">
+        <mat-icon>share</mat-icon>
+    </button>
+
+    <!-- Theme selector begins -->
     <button matIconButton [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu">
         <mat-icon>more_vert</mat-icon>
     </button>
+
+    <mat-menu #menu="matMenu">
+        @for (theme of themes; track theme) {
+        <button mat-menu-item (click)="switchTheme(theme)">
+            <mat-radio-button [checked]="theme === currentTheme()"></mat-radio-button>
+            <span>{{theme}}</span>
+        </button>
+        }
+    </mat-menu>
+    <!-- Theme selector ends -->
+
+</mat-toolbar>
+
+
+<mat-sidenav-container class="example-container-" (backdropClick)="close('backdrop')" style="height: 90%;">
+
+    <mat-sidenav #sidenav (keydown.escape)="close('escape')" disableClose [mode]="'over'">
+        <mat-nav-list>
+            @for (link of list; track link) {
+            <a mat-list-item [activated]="link.isActive" (click)="goToLink(link.route)" >{{ link.name }}</a>
+            }
+        </mat-nav-list>
+    </mat-sidenav>
+
+    <mat-sidenav-content>
+
+        <router-outlet />
+
+    </mat-sidenav-content>
+</mat-sidenav-container>
+
+
+
+
+<div class="d-flex justify-content-end">
+
 </div>
-<mat-menu #menu="matMenu">
-    @for (theme of themes; track theme) {
-    <button mat-menu-item (click)="switchTheme(theme)">
-        <mat-radio-button [checked]="theme === currentTheme()"></mat-radio-button>
-        <!-- <mat-icon>notifications_off</mat-icon> -->
-        <span>{{theme}}</span>
-    </button>
-    }
-
-</mat-menu>
-
-<!-- Theme selector ends -->
-
-<router-outlet />

@@ -40,8 +40,16 @@ export class Error<T extends string | number> implements OnInit {
         case 'minLength':
           return `Minimum length not met`;
         case 'maxLength':
+          return `Maximum length exceeded`;
+        case 'min':
+          return `Value is below minimum`;
+        case 'max':
+          return `Value exceeds maximum`;
+        default:
+          return `Error: ${err.kind}`;
+
       }
-      
+
 
     }
 

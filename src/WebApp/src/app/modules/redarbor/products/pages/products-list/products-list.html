@@ -1,1 +1,45 @@
-<p>products-list works!</p>
+<div class="row">
+    <mat-form-field class="col-lg-3 col-md-4 col-sm-6 col-12">
+        <mat-label>Search by name</mat-label>
+        <input matInput [formField]="filterForm.name" type="text" />
+    </mat-form-field>
+
+    <mat-form-field class="col-lg-3 col-md-4 col-sm-6 col-12">
+        <mat-label>Min Price</mat-label>
+        <input matInput [formField]="filterForm.minPrice" type="number" />
+    </mat-form-field>
+
+    <mat-form-field class="col-lg-3 col-md-4 col-sm-6 col-12">
+        <mat-label>Max Price</mat-label>
+        <input matInput [formField]="filterForm.maxPrice" type="number" />
+    </mat-form-field>
+
+    <mat-form-field class="col-lg-3 col-md-4 col-sm-6 col-12">
+        <mat-label>Category ID</mat-label>
+        <input matInput [formField]="filterForm.categoryId" type="number" />
+    </mat-form-field>
+</div>
+
+
+
+<table>
+    <tr>
+        <th>Product ID</th>
+        <th>Name</th>
+        <th>Description</th>
+        <th>Price</th>
+        <th>Created At</th>
+        <th>Category ID</th>
+    </tr>
+    @for (product of productz(); track product.productId) {
+    <tr>
+        <td>{{product.productId}}</td>
+        <td>{{product.name}}</td>
+        <td>{{product.description}}</td>
+        <td>{{product.price}}</td>
+        <td>{{product.createdAt | date:'short'}}</td>
+        <td>{{product.categoryId}}</td>
+    </tr>
+    }
+
+</table>
