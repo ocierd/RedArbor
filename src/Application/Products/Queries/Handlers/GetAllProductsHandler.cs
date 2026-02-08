@@ -1,4 +1,3 @@
-using Microsoft.EntityFrameworkCore;
 
 namespace RedArbor.Application.Products.Queries.Handlers;
 
@@ -6,7 +5,8 @@ namespace RedArbor.Application.Products.Queries.Handlers;
 /// Handler for GetAllProductsQuery
 /// </summary>
 /// <param name="context"> Context for accessing products </param>
-public class GetAllProductsHandler(IApplicationDbContext context) : IRequestHandler<GetAllProductsQuery, IEnumerable<ProductDto>>
+public class GetAllProductsHandler(IApplicationDbContext context) 
+    : IRequestHandler<GetAllProductsQuery, IEnumerable<ProductDto>>
 {
     private readonly IApplicationDbContext _context = context;
 
@@ -19,7 +19,8 @@ public class GetAllProductsHandler(IApplicationDbContext context) : IRequestHand
             Name = p.Name,
             Description = p.Description,
             Price = p.Price,
-            CategoryId = p.CategoryId
+            CategoryId = p.CategoryId,
+            CreatedAt = p.CreatedAt
         });
     }
 }

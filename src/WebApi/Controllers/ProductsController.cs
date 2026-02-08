@@ -24,6 +24,20 @@ public class ProductsController(IMediator mediator) : ApiControllerBase
         return response;
     }
 
+
+    /// <summary>
+    /// Get products filtered by name, category, price range
+    /// </summary>
+    /// <param name="query">Filter criteria</param>
+    /// <returns>Collection of filtered products</returns>
+    [HttpPost("filtered")]
+    public async Task<IEnumerable<ProductDto>> GetFilteredProducts(
+        [FromBody] GetFilteredProductsQuery query)
+    {
+        var response = await _mediator.Send(query);
+        return response;
+    }
+
     /// <summary>
     /// / Get product by Id
     /// </summary>
