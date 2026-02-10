@@ -1,31 +1,34 @@
-<mat-toolbar>
-    <button matIconButton class="example-icon" aria-label="Example icon-button with menu icon"
-        (click)="sidenav.toggle()">
-        <mat-icon>menu</mat-icon>
-    </button>
-    <span>My App</span>
-    <span class="example-spacer"></span>
-    <button matIconButton class="example-icon favorite-icon" aria-label="Example icon-button with heart icon">
-        <mat-icon>favorite</mat-icon>
-    </button>
-    <button matIconButton class="example-icon" aria-label="Example icon-button with share icon">
-        <mat-icon>share</mat-icon>
-    </button>
-
-    <!-- Theme selector begins -->
-    <button matIconButton [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu">
-        <mat-icon>more_vert</mat-icon>
-    </button>
-
-    <mat-menu #menu="matMenu">
-        @for (theme of themes; track theme) {
-        <button mat-menu-item (click)="switchTheme(theme)">
-            <mat-radio-button [checked]="theme === currentTheme()"></mat-radio-button>
-            <span>{{theme}}</span>
+<mat-toolbar class="d-flex justify-content-between">
+    <div >
+        <button matIconButton (click)="sidenav.toggle()">
+            <mat-icon>menu</mat-icon>
         </button>
-        }
-    </mat-menu>
-    <!-- Theme selector ends -->
+        <span>My App</span>
+    </div>
+    <span class="example-spacer"></span>
+    <div>
+        <button matIconButton class="example-icon favorite-icon">
+            <mat-icon>favorite</mat-icon>
+        </button>
+        <button matIconButton (click)="closeSession()">
+            <mat-icon>close</mat-icon>
+        </button>
+        <span>{{ expiration() }}</span>
+        <!-- Theme selector begins -->
+        <button matIconButton [matMenuTriggerFor]="menu">
+            <mat-icon>more_vert</mat-icon>
+        </button>
+
+        <mat-menu #menu="matMenu">
+            @for (theme of themes; track theme) {
+            <button mat-menu-item (click)="switchTheme(theme)">
+                <mat-radio-button [checked]="theme === currentTheme()"></mat-radio-button>
+                <span>{{theme}}</span>
+            </button>
+            }
+        </mat-menu>
+        <!-- Theme selector ends -->
+    </div>
 
 </mat-toolbar>
 
@@ -35,7 +38,7 @@
     <mat-sidenav #sidenav (keydown.escape)="close('escape')" disableClose [mode]="'over'">
         <mat-nav-list>
             @for (link of list; track link) {
-            <a mat-list-item [activated]="link.isActive" (click)="goToLink(link.route)" >{{ link.name }}</a>
+            <a mat-list-item [activated]="link.isActive" (click)="goToLink(link.route)">{{ link.name }}</a>
             }
         </mat-nav-list>
     </mat-sidenav>

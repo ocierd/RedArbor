@@ -6,5 +6,5 @@ export interface AuthToken {
     expiresIn: number;
     refreshToken: string;
     refreshTokenExpiresIn: number;
-
+    createdAt: string | Date;
 }

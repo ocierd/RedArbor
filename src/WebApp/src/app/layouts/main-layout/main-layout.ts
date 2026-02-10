@@ -1,9 +1,10 @@
-import { Component, inject, ViewChild } from '@angular/core';
-import { isActive, Router, RouterOutlet } from '@angular/router';
+import { Component, effect, inject, Signal, ViewChild } from '@angular/core';
+import { Router, RouterOutlet } from '@angular/router';
 import { MaterialModule } from '../../shared/material/material-module';
 import { ThemeService, ThemeType } from '../../shared/services/theme-service';
 import { FormsModule } from '@angular/forms';
 import { MatSidenav } from '@angular/material/sidenav';
+import { AuthService, ExpirationTokenState } from '@services/redarbor/auth-service';
 
 
 /**
@@ -23,7 +24,17 @@ export class MainLayout {
    */
   private themeService: ThemeService = inject(ThemeService);
 
+
+  /**
+   * Inject the ExpirationTokenState to manage token expiration state
+   */
+  protected expiration:Signal<number>;
+
+  /**
+   * Inject the Router to manage navigation
+   */
   private router: Router = inject(Router);
+  
 
   /**
    * Available themes
@@ -47,6 +58,20 @@ export class MainLayout {
   @ViewChild('sidenav') sidenav!: MatSidenav;
   reason = '';
 
+  constructor(private authService: AuthService) {
+    console.log('Constructor of MAIN Layout');
+    
+    this.expiration = inject(ExpirationTokenState).expiration;
+
+    effect(() => {
+      const exp = this.expiration();
+      if (exp <= 0) {
+        this.closeSession();
+      }
+      
+    });
+  }
+
   close(reason: string) {
     this.reason = reason;
     this.sidenav.close();
@@ -66,6 +91,13 @@ export class MainLayout {
    */
   goToLink(route: string): void {
     this.router.navigate([route]);
+  }
+
+
+  closeSession(): void {
+
+    this.authService.closeSession();
+    this.router.navigate(['/auth']);
   }
 
 }
