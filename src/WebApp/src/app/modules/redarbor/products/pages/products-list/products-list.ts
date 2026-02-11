@@ -1,9 +1,10 @@
-import { Component, computed, effect, inject, signal, Signal, WritableSignal } from '@angular/core';
+import { Component, computed, effect, inject, OnDestroy, signal, Signal, WritableSignal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { debounce, disabled, form } from '@angular/forms/signals';
 import { Product, ProductsFilterData } from '@models/products.model';
 import { ProductsService } from '@services/redarbor/products-service';
 import { BehaviorSubject, firstValueFrom, Subject, } from 'rxjs';
+import { AlertsService } from '../../../../../shared/services/alerts-service';
 
 const RESET_DATA = {
   name: '',
@@ -18,7 +19,7 @@ const RESET_DATA = {
   templateUrl: './products-list.html',
   styleUrl: './products-list.scss',
 })
-export class ProductsList {
+export class ProductsList implements OnDestroy {
 
   filterData: WritableSignal<ProductsFilterData> = signal({
     ...RESET_DATA
@@ -37,6 +38,8 @@ export class ProductsList {
   productz: Signal<Product[]> = toSignal(this.productsFilterSubject
     , { initialValue: [] });
 
+
+  alertsService = inject(AlertsService);
 
   constructor() {
 
@@ -67,10 +70,8 @@ export class ProductsList {
       const products = firstValueFrom(this.productsService.getFilteredProducts(dataToSend));
       this.productsFilterSubject.next(await products);
       const fs = this.filterForm();
-      console.log("Bindings: ", fs.formFieldBindings());
-
     } catch (error) {
-
+      this.alertsService.sendAlertMessageAsync('An error occurred while fetching products.');
     }
     finally {
       this.loadingFilter.set(false);
@@ -80,7 +81,15 @@ export class ProductsList {
 
   resetFilters() {
     this.filterData.set({ ...RESET_DATA });
-    this.getProducts();
+  }
+
+  ngOnDestroy(): void {
+    this.productsFilterSubject.complete();
+  }
+
+
+  openAlert() {
+    this.alertsService.sendAlertMessageAsync('This is an alert message!');
   }
 
 }

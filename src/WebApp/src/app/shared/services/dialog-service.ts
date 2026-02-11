@@ -1,5 +1,6 @@
+import { ComponentType } from '@angular/cdk/overlay';
 import { inject, Injectable } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 
 /**
  * Dialog service to open dialogs from anywhere in the app
@@ -9,7 +10,7 @@ import { MatDialog } from '@angular/material/dialog';
 })
 export class DialogService {
 
-    dialog = inject(MatDialog);
+    matDialog = inject(MatDialog);
 
     /**
      * Open a dialog with the specified component and data
@@ -17,8 +18,8 @@ export class DialogService {
      * @param data Data to display in the the dialog
      * @returns Dialog reference
      */
-    openDialog(component: any, data?: any) {
-        return this.dialog.open(component, {
+    openDialog<T, D = any, R = any>(component: ComponentType<T>, data?: D): MatDialogRef<T, R> {
+        return this.matDialog.open(component, {
             data: data,
         });
     }

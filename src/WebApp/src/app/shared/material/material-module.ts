@@ -10,7 +10,11 @@ import { MatIconModule } from "@angular/material/icon";
 import { MatMenuModule } from "@angular/material/menu";
 import { MatToolbarModule } from "@angular/material/toolbar";
 import { MatSidenavModule } from "@angular/material/sidenav";
-import { MatListModule, MatNavList } from "@angular/material/list";
+import { MatListModule } from "@angular/material/list";
+import { MatDialogModule } from "@angular/material/dialog";
+import { DialogModule } from "@angular/cdk/dialog";
+import { OverlayModule } from "@angular/cdk/overlay";
+import { MatTooltipModule } from "@angular/material/tooltip";
 
 /**
  * Material Design components module
@@ -26,8 +30,11 @@ const materialModules = [
     MatMenuModule,
     MatToolbarModule,
     MatSidenavModule,
-    MatListModule
-    
+    MatListModule,
+    MatDialogModule,
+    DialogModule,
+    MatTooltipModule,
+    OverlayModule
 ];
 
 @NgModule({
@@ -39,7 +46,7 @@ const materialModules = [
     exports: [
         ...materialModules
     ],
-    
+
 
 })
 export class MaterialModule {

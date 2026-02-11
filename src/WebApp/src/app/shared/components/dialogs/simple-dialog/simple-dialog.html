@@ -1,0 +1,17 @@
+<h4 mat-dialog-title>
+    {{ data.title }}</h4>
+<mat-dialog-content>
+    <section class="d-flex align-items-center justify-content-between">
+        <mat-icon>info</mat-icon>
+        <p>{{ data.message }}</p>
+    </section>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+
+    <button mat-raised-button (click)="onConfirm()" cdkFocusInitial>{{'OK' }}</button>
+    @if ( isConfirmDialog(data) && data.cancelText) {
+    <button mat-raised-button (click)="onCancel()">{{ data.cancelText }}</button>
+    }
+
+</mat-dialog-actions>

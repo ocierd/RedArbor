@@ -2,21 +2,25 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Error } from './generic/error/error';
 import { MaterialModule } from '../material/material-module';
+import { SimpleDialog } from './dialogs/simple-dialog/simple-dialog';
 
-
+/**
+ * Module that declares and exports all shared components used across the app
+ */
 const components = [
-    Error
+    Error,
+    SimpleDialog
 ];
 
 
 @NgModule({
   declarations: [
-    ...components
+    ...components,
   ],
   imports: [
     CommonModule,
     MaterialModule
-  ],
+],
   exports: [
     ...components
   ],

@@ -199,15 +199,15 @@ $tertiary-palette: map.merge(map.get($_palettes, tertiary), $_rest);
         ))
 }
 
-.default-theme {
-    @include mat.theme((color: (
-                primary: $primary-palette,
-                secondary: map.get($_rest, secondary),
+
+$default-theme: mat.define-theme((color: (primary: $primary-palette,
+
+                // secondary: map.get($_rest, secondary),
                 tertiary: $tertiary-palette,
-                neutral: map.get($_rest, neutral),
-                neutral-variant: map.get($_rest, neutral-variant),
-                error: map.get($_rest, error),
-                
+                // neutral: map.get($_rest, neutral),
+                // neutral-variant: map.get($_rest, neutral-variant),
+                // error: map.get($_rest, error),
+
                 theme-type: light,
             ),
             typography: ( // plain-family: Arial,
@@ -217,6 +217,12 @@ $tertiary-palette: map.merge(map.get($_palettes, tertiary), $_rest);
                 medium-weight: 500,
                 regular-weight: 300,
             ),
-            density: -1,
-        ));
+            density:(
+                scale: -1
+                )            
+            ));
+
+.default-theme {
+    @include mat.theme($default-theme); // Apply global theme
+    @include mat.all-component-themes($default-theme);
 }

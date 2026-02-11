@@ -1,9 +1,10 @@
-import { Component, inject, signal, Signal, WritableSignal } from '@angular/core';
+import { Component, inject, signal, WritableSignal } from '@angular/core';
 import { FieldTree, form, maxLength, minLength, required } from '@angular/forms/signals';
 import { Router } from '@angular/router';
 import { AuthService } from '@services/redarbor/auth-service';
 import { firstValueFrom } from 'rxjs';
 import { DialogService } from '../../../../shared/services/dialog-service';
+import { AlertsService } from '../../../../shared/services/alerts-service';
 
 type loginForm = { username: string, password: string };
 
@@ -18,6 +19,7 @@ export class Login {
   readonly authService: AuthService = inject(AuthService);
   readonly router: Router = inject(Router);
   readonly dialogService = inject(DialogService);
+  readonly alertsService = inject(AlertsService);
 
 
   usersLoginData = [
@@ -28,34 +30,28 @@ export class Login {
 
   loginData: WritableSignal<loginForm> = signal({ username: 'admin', password: 'Password123!' });
 
-  loginForm: FieldTree<loginForm> = form(this.loginData, opts => {
-    required(opts.username);
-    required(opts.password);
-    minLength(opts.username, 3);
-    maxLength(opts.username, 5);
+  loginForm: FieldTree<loginForm> = form(this.loginData,
+    opts => {
+      required(opts.username);
+      required(opts.password);
+      minLength(opts.username, 3);
+      maxLength(opts.username, 5);
 
-  });
+    });
 
 
   /**
    * Handle form submission
    */
   async onSubmit() {
-
     try {
-      
       const data = this.loginForm().value();
-      console.log('Login data: ', data);
-      
       const authToken = await firstValueFrom(this.authService.auth(data));
       this.authService.setLocalStorageToken(authToken);
-      console.log("Login successful, token stored: ", authToken);
       this.router.navigate(['/redarbor'], {});
     } catch (error) {
-      console.error(error);
-      this.dialogService.openDialog("Ocurrió un error al iniciar sesión", { error });
-      
-
+      this.alertsService
+        .sendAlertMessageAsync("Ocurrió un error al iniciar sesión");
     }
     finally {
       console.log("Login attempt finished.");

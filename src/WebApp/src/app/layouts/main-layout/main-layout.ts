@@ -5,6 +5,7 @@ import { ThemeService, ThemeType } from '../../shared/services/theme-service';
 import { FormsModule } from '@angular/forms';
 import { MatSidenav } from '@angular/material/sidenav';
 import { AuthService, ExpirationTokenState } from '@services/redarbor/auth-service';
+import { OverlayContainer } from '@angular/cdk/overlay';
 
 
 /**
@@ -58,7 +59,9 @@ export class MainLayout {
   @ViewChild('sidenav') sidenav!: MatSidenav;
   reason = '';
 
-  constructor(private authService: AuthService) {
+  constructor(private authService: AuthService,
+    private overlayContainer: OverlayContainer
+  ) {
     console.log('Constructor of MAIN Layout');
     
     this.expiration = inject(ExpirationTokenState).expiration;
@@ -83,7 +86,12 @@ export class MainLayout {
    */
   switchTheme(theme: ThemeType): void {
     this.themeService.setCurrentTheme(theme);
+    const overlayContainerElement = this.overlayContainer.getContainerElement();
+    overlayContainerElement.classList.remove(...this.themeService.themes);
+    overlayContainerElement.classList.add(theme);
   }
+
+  
 
   /**
    * Navigate to specified route
