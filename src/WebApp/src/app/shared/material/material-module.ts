@@ -15,6 +15,7 @@ import { MatDialogModule } from "@angular/material/dialog";
 import { DialogModule } from "@angular/cdk/dialog";
 import { OverlayModule } from "@angular/cdk/overlay";
 import { MatTooltipModule } from "@angular/material/tooltip";
+import { MatTableModule } from "@angular/material/table";
 
 /**
  * Material Design components module
@@ -34,7 +35,8 @@ const materialModules = [
     MatDialogModule,
     DialogModule,
     MatTooltipModule,
-    OverlayModule
+    OverlayModule,
+    MatTableModule
 ];
 
 @NgModule({

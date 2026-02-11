@@ -21,6 +21,8 @@ const RESET_DATA = {
 })
 export class ProductsList implements OnDestroy {
 
+  columnsToDisplay = ['productId','name', 'description', 'price', 'createdAt'];
+
   filterData: WritableSignal<ProductsFilterData> = signal({
     ...RESET_DATA
   });
