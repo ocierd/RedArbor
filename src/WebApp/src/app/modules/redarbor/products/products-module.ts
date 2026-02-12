@@ -3,8 +3,8 @@ import { CommonModule } from '@angular/common';
 
 import { ProductsRoutingModule } from './products-routing-module';
 import { ProductsList } from './pages/products-list/products-list';
-import { MaterialModule } from "../../../shared/material/material-module";
 import { FormField } from "@angular/forms/signals";
+import { SharedModule } from '../../../shared/shared-module';
 
 
 @NgModule({
@@ -14,7 +14,7 @@ import { FormField } from "@angular/forms/signals";
   imports: [
     CommonModule,
     ProductsRoutingModule,
-    MaterialModule,
+    SharedModule,
     FormField
 ]
 })

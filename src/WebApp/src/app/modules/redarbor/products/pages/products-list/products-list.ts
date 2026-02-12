@@ -1,9 +1,9 @@
-import { Component, computed, effect, inject, OnDestroy, signal, Signal, WritableSignal } from '@angular/core';
+import { Component, effect, inject, OnDestroy, signal, Signal, WritableSignal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { debounce, disabled, form } from '@angular/forms/signals';
 import { Product, ProductsFilterData } from '@models/products.model';
 import { ProductsService } from '@services/redarbor/products-service';
-import { BehaviorSubject, firstValueFrom, Subject, } from 'rxjs';
+import { firstValueFrom, Subject, } from 'rxjs';
 import { AlertsService } from '../../../../../shared/services/alerts-service';
 
 const RESET_DATA = {
@@ -21,11 +21,18 @@ const RESET_DATA = {
 })
 export class ProductsList implements OnDestroy {
 
-  columnsToDisplay = ['productId','name', 'description', 'price', 'createdAt'];
+  columnsToDisplay = ['productId', 'name', 'description', 'price', 'createdAt', 'otra.nested.property'];
 
-  filterData: WritableSignal<ProductsFilterData> = signal({
-    ...RESET_DATA
-  });
+  columns = [
+    { field: 'productId', header: 'ID' },
+    { field: 'name', header: 'Name' },
+    { field: 'description', header: 'Description' },
+    { field: 'price', header: 'Price' },
+    { field: 'createdAt', header: 'Created At' },
+    { field: 'otra.nested.property', header: 'Nested Property' }
+  ];
+
+  filterData: WritableSignal<ProductsFilterData> = signal({ ...RESET_DATA });
   currentFilter: WritableSignal<ProductsFilterData | null> = signal(null);
   loadingFilter: WritableSignal<boolean> = signal(false);
 
@@ -69,8 +76,17 @@ export class ProductsList implements OnDestroy {
         categoryId: filterValue.categoryId ? Number(filterValue.categoryId) : undefined,
       };
       this.loadingFilter.set(true);
-      const products = firstValueFrom(this.productsService.getFilteredProducts(dataToSend));
-      this.productsFilterSubject.next(await products);
+      const products = await firstValueFrom(this.productsService.getFilteredProducts(dataToSend));
+      products.forEach(p => {
+        if (typeof p.createdAt === 'string') {
+          p.createdAt = new Date(p.createdAt);
+          (p as any).otra = {
+            nested: { property: p.createdAt.toDateString() }
+          }
+        }
+
+      });
+      this.productsFilterSubject.next(products);
       const fs = this.filterForm();
     } catch (error) {
       this.alertsService.sendAlertMessageAsync('An error occurred while fetching products.');

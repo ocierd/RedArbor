@@ -32,7 +32,7 @@
 
 
 <!-- Products table of MatTable  -->
-<table mat-table [dataSource]="productz()">
+<!-- <table mat-table [dataSource]="productz()">
 
     <ng-container matColumnDef="productId">
         <th mat-header-cell *matHeaderCellDef> Id </th>
@@ -62,11 +62,7 @@
     <tr mat-header-row *matHeaderRowDef="columnsToDisplay"></tr>
     <tr mat-row *matRowDef="let myRowData; columns: columnsToDisplay"></tr>
 
-</table>
+</table> -->
 
 
-
-<div class="row">
-    <div class="col-4">
-    </div>
-</div>
+<app-grid [columns]="columns" [gridData]="productz()"></app-grid>
