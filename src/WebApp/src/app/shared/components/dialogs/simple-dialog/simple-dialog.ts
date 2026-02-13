@@ -23,7 +23,8 @@ export class SimpleDialog {
    * @returns True if is ConfirmDialogData
    */
   isConfirmDialog(data: AlertDialogData | ConfirmDialogData): data is ConfirmDialogData {
-    return 'confirmText' in this.data || 'cancelText' in this.data || 'showCancelButton' in this.data;
+    const isConfirm= 'confirmText' in this.data || 'cancelText' in this.data || 'showCancelButton' in this.data;;
+    return isConfirm
   }
 
 

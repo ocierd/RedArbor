@@ -1,4 +1,4 @@
-import { Component, inject, signal, WritableSignal } from '@angular/core';
+import { Component, inject, signal, Signal, WritableSignal } from '@angular/core';
 import { FieldTree, form, maxLength, minLength, required } from '@angular/forms/signals';
 import { Router } from '@angular/router';
 import { AuthService } from '@services/redarbor/auth-service';
@@ -28,33 +28,43 @@ export class Login {
     { username: 'inventoryManager', password: 'Password123!', roles: ['InventoryManager'] }
   ]
 
+  isLoading: WritableSignal<boolean> = signal(false);
+
   loginData: WritableSignal<loginForm> = signal({ username: 'admin', password: 'Password123!' });
 
-  loginForm: FieldTree<loginForm> = form(this.loginData,
-    opts => {
-      required(opts.username);
-      required(opts.password);
-      minLength(opts.username, 3);
-      maxLength(opts.username, 5);
+  loginForm: FieldTree<loginForm> = form(this.loginData, opts => {
+    required(opts.username);
+    required(opts.password);
+    minLength(opts.username, 3);
+    maxLength(opts.username, 5);
 
-    });
+  });
 
 
   /**
    * Handle form submission
    */
   async onSubmit() {
+
     try {
+      this.isLoading.set(true);
       const data = this.loginForm().value();
+      console.log('Login data: ', data);
+
       const authToken = await firstValueFrom(this.authService.auth(data));
       this.authService.setLocalStorageToken(authToken);
-      this.router.navigate(['/redarbor'], {});
+      console.log("Login successful, token stored: ", authToken);
+      const navigate = await this.router.navigate(['/redarbor']);
+      if (!navigate) {
+        this.alertsService.sendAlertMessageAsync("Navigation to /redarbor successful.");
+      }
     } catch (error) {
-      this.alertsService
-        .sendAlertMessageAsync("Ocurrió un error al iniciar sesión");
+      console.error(error);
+      this.alertsService.sendAlertMessageAsync("Ocurrió un error al iniciar sesión");
     }
     finally {
       console.log("Login attempt finished.");
+      this.isLoading.set(false);
     }
 
   }

@@ -20,49 +20,19 @@
         <input matInput [formField]="filterForm.categoryId" type="number" />
     </mat-form-field>
 
-    <div class="col-lg-1 col-md-3 col-sm-6 col-12">
-        <button mat-raised-button (click)="resetFilters()">Reset</button>
+    <div class="col-lg-1 col-md-3 col-sm-6 col-12 align-items-center d-flex text-center">
+        <!-- <button mat-raised-button (click)="resetFilters()">Reset</button> -->
+         <app-spinner-button text="Reset" (clic)="resetFilters()" [isLoading]="loadingFilter()" />
     </div>
-    <div class="col-lg-1 col-md-3 col-sm-6 col-12">
-        <button mat-raised-button (click)="openAlert()">Alert</button>
+    <div class="col-lg-1 col-md-3 col-sm-6 col-12 align-items-center d-flex justify-content-start">
+        <!-- <button mat-raised-button (click)="openAlert()">Alert</button> -->
+        <app-spinner-button text="Alert" (clic)="openAlert()" [isLoading]="loadingFilter()" />
     </div>
+
 </div>
 
 
 
 
-<!-- Products table of MatTable  -->
-<!-- <table mat-table [dataSource]="productz()">
-
-    <ng-container matColumnDef="productId">
-        <th mat-header-cell *matHeaderCellDef> Id </th>
-        <td mat-cell *matCellDef="let p"> {{p.productId}} </td>
-    </ng-container>
-
-
-    <ng-container matColumnDef="name">
-        <th mat-header-cell *matHeaderCellDef> Name </th>
-        <td mat-cell *matCellDef="let p"> {{p.name}} </td>
-    </ng-container>
-
-    <ng-container matColumnDef="description">
-        <th mat-header-cell *matHeaderCellDef> Description </th>
-        <td mat-cell *matCellDef="let p"> {{p.description}} </td>
-    </ng-container>
-
-    <ng-container matColumnDef="price">
-        <th mat-header-cell *matHeaderCellDef> Price </th>
-        <td mat-cell *matCellDef="let p"> {{p.price}} </td>
-    </ng-container>
-    <ng-container matColumnDef="createdAt">
-        <th mat-header-cell *matHeaderCellDef> Created At </th>
-        <td mat-cell *matCellDef="let p"> {{p.createdAt}} </td>
-    </ng-container>
-
-    <tr mat-header-row *matHeaderRowDef="columnsToDisplay"></tr>
-    <tr mat-row *matRowDef="let myRowData; columns: columnsToDisplay"></tr>
-
-</table> -->
-
-
+<!-- Products Grid of MatTable  -->
 <app-grid [columns]="columns" [gridData]="productz()"></app-grid>

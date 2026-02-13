@@ -1,6 +1,7 @@
 import { inject } from '@angular/core';
-import { CanActivateFn, RedirectCommand, Router } from '@angular/router';
+import { CanActivateChildFn, CanActivateFn, Router } from '@angular/router';
 import { AuthService } from '@services/redarbor/auth-service';
+import { LoggerService } from '@shared-services/logger-service';
 
 /**
  * Authentication guard to protect routes
@@ -8,18 +9,17 @@ import { AuthService } from '@services/redarbor/auth-service';
  * @param state Router state snapshot
  * @returns 
  */
-export const authGuard: CanActivateFn = (route, state) => {
+export const authGuard: CanActivateFn | CanActivateChildFn = (route, state) => {
+  const logger = inject(LoggerService);
   const authService = inject(AuthService);
-  console.log("Url actual: ", route.url);
-
-
+  
+  logger.log("Url actual: ", state.url);
   if (authService.isAuthenticated()) {
-    console.log('Is authenticated');
-    
+    logger.log('Is authenticated');
     return true;
   }
+  logger.warn('Not authenticated, redirecting to login');
   const router = inject(Router);
-
   const loginPath = router.parseUrl("/auth");
   return loginPath;
 };

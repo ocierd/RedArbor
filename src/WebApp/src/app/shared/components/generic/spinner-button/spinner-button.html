@@ -1,0 +1,8 @@
+@if (isLoading()) {
+<button mat-raised-button disabled>
+    <app-spinner [color]="'warn'"></app-spinner>
+</button>
+}
+@else {
+<button mat-raised-button (click)="onClick($event)">{{text()}}</button>
+}

@@ -25,6 +25,10 @@ export class AlertsService {
   private readonly dialogService: DialogService = inject(DialogService);
 
 
+  /**
+   * Send a simple alert message.
+   * @param message Message to display
+   */
   async sendAlertMessageAsync(message: string): Promise<void> {
     const data: AlertDialogData = {
       title: this.ALERT_DEFAULT_TITLE,
@@ -33,6 +37,11 @@ export class AlertsService {
     await this.sendAlertAsync(data);
   }
 
+  /**
+   * Send a confirmation alert message.
+   * @param message Message to display
+   * @returns Promise of response
+   */
   async sendConfirmAlertAsync(message: string): Promise<boolean> {
     const data: ConfirmDialogData = {
       title: this.ALERT_DEFAULT_TITLE,
@@ -45,6 +54,11 @@ export class AlertsService {
     return confirmed;
   }
 
+  /**
+   * Send an alert message and wait for the user's response.
+   * @param data Data to show
+   * @returns Promise of response
+   */
   async sendAlertAsync(data: ConfirmDialogData | AlertDialogData): Promise<boolean> {
     const afterClosed = this.sendAlert(data).afterClosed();
     const confirmed = await firstValueFrom(afterClosed);
@@ -54,14 +68,13 @@ export class AlertsService {
     return confirmed;
   }
 
-
-
-
+  /**
+   * Send an alert message without waiting for the user's response.
+   * @param data Data to show
+   * @returns Mat dialog reference
+   */
   sendAlert(data: ConfirmDialogData | AlertDialogData): MatDialogRef<SimpleDialog, boolean> {
-    return this.dialogService.openDialog(SimpleDialog, {
-      title: data.title ?? this.ALERT_DEFAULT_TITLE,
-      message: data.message
-    });
+    return this.dialogService.openDialog(SimpleDialog, { data });
   }
 
 }

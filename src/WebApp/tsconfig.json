@@ -19,6 +19,7 @@
       "@models/*":["./src/app/shared/models/*"],
       "@services/*":["./src/app/core/services/*"],
       "@ramodules/*":["./src/app/modules/redarbor/*"],
+      "@shared-services/*":["./src/app/shared/services/*"],
       
 
       "@styles/*":["./src/styles/*"]

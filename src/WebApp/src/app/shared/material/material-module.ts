@@ -16,6 +16,7 @@ import { DialogModule } from "@angular/cdk/dialog";
 import { OverlayModule } from "@angular/cdk/overlay";
 import { MatTooltipModule } from "@angular/material/tooltip";
 import { MatTableModule } from "@angular/material/table";
+import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
 
 /**
  * Material Design components module
@@ -36,7 +37,8 @@ const materialModules = [
     DialogModule,
     MatTooltipModule,
     OverlayModule,
-    MatTableModule
+    MatTableModule,
+    MatProgressSpinnerModule
 ];
 
 @NgModule({

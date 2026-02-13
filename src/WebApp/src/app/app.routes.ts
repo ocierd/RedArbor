@@ -17,6 +17,7 @@ export const routes: Routes = [
     {
         path: 'redarbor', component: MainLayout,
         canActivate: [authGuard],
+        canActivateChild: [authGuard],
         loadChildren: () => import('@modules/redarbor/redarbor-module')
             .then(m => m.RedarborModule)
     }

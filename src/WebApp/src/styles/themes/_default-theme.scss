@@ -225,4 +225,6 @@ $default-theme: mat.define-theme((color: (primary: $primary-palette,
 .default-theme {
     @include mat.theme($default-theme); // Apply global theme
     @include mat.all-component-themes($default-theme);
+    @include mat.color-variants-backwards-compatibility($default-theme);
+
 }

@@ -37,7 +37,8 @@
 
     <div class="col-12 d-flex justify-content-start">
         <button mat-raised-button (click)="onSubmit()" color="tertiary"
-            [disabled]="loginForm().invalid()">Login</button>
+            [disabled]="loginForm().invalid() || isLoading()">Login</button>
+
     </div>
 
 </div>
