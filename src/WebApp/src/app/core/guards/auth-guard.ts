@@ -13,9 +13,7 @@ export const authGuard: CanActivateFn | CanActivateChildFn = (route, state) => {
   const logger = inject(LoggerService);
   const authService = inject(AuthService);
   
-  logger.log("Url actual: ", state.url);
   if (authService.isAuthenticated()) {
-    logger.log('Is authenticated');
     return true;
   }
   logger.warn('Not authenticated, redirecting to login');

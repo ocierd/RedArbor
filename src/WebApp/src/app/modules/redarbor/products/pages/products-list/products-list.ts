@@ -3,9 +3,11 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { debounce, disabled, FieldState, FieldTree, form } from '@angular/forms/signals';
 import { Product, ProductsFilterData } from '@models/products.model';
 import { ProductsService } from '@services/redarbor/products-service';
-import { filter, firstValueFrom, Subject, } from 'rxjs';
+import { filter, firstValueFrom, pipe, Subject, } from 'rxjs';
 import { AlertsService } from '../../../../../shared/services/alerts-service';
 import { LoggerService } from '@shared-services/logger-service';
+import { DatePipe } from '@angular/common';
+import { GridColumn } from '@models/gui/grid-model';
 
 const RESET_DATA = {
   name: '',
@@ -24,27 +26,70 @@ export class ProductsList implements AfterViewInit, OnDestroy {
 
   private logger = inject(LoggerService);
 
-  columns = [
+  /**
+   * Configuration of the columns to display in the products grid, 
+   * including the field to display, the header, and optionally a pipe to apply to the data in that column.
+   */
+  columns: GridColumn[] = [
     { field: 'productId', header: 'ID' },
     { field: 'name', header: 'Name' },
     { field: 'description', header: 'Description' },
     { field: 'price', header: 'Price' },
-    { field: 'createdAt', header: 'Created At' },
+    { field: 'createdAt', header: 'Created At', pipe: { type: DatePipe, args: 'dd/MM/yyyy' } },
     { field: 'otra.nested.property', header: 'Nested Property' }
   ];
 
+  /**
+   * Signals to manage the state of the product filters, the current filter applied, and the Loading state while fetching products.
+   */
   filterData: WritableSignal<ProductsFilterData> = signal({ ...RESET_DATA });
+
+  /**
+   * Current filter applied to the products List.
+   * This is used to compare with the filterData signal in the effect that listens to filterData changes, 
+   * to avoid  making unnecessary calls to the products service when the filter data has not actually changed 
+   * (because of the debounce, the effect will be triggered after 500ms of inactivity, 
+   * but if the user has not actually changed the filter data, we want to avoid making a call to the products service).
+   * 
+   */
   currentFilter: WritableSignal<ProductsFilterData | null> = signal(null);
+
+  /**
+   * Signal to manage the Loading state while fetching products.
+   * This is used to disable the filter form and the alert button while products are being fetched,
+   * to prevent multiple calls to the products service and multiple alerts from beign opened at the same time.
+   */
   loadingFilter: WritableSignal<boolean> = signal(false);
 
+  /**
+   * Form configuration for the product filters, using Angular's reactive forms with signals.
+   * The form is configured to debounce the input changes by 500ms and to be disabled while loading products.
+   * The form fields are bound to the filterData signal, so any changes in the form will update the filterData signal, 
+   * which will trigger the effect that listens to filterData changes and reload the products with the new filters.
+   */
   filterForm: FieldTree<ProductsFilterData> = form<ProductsFilterData>(this.filterData, opts => {
     debounce(opts, 500);
     disabled(opts, this.loadingFilter);
   });
 
+  /**
+   * Subject to manage the products to display in the grid based on the current filters.
+   * The products are fetched from the products service when the filterData signal changes (after the debounce), 
+   * and the new products are emitted through this subject, which is converted to a signal using the toSignal function from Angular's rxjs-interop package.
+   */
   productsService = inject(ProductsService);
+
+  /**
+   * Signal that holds the list of products to display in the grid, based on the current filters.
+   * This signal is created from the productsFilterSubject using the toSignal function, which allows us to use the products emitted by the subject as a signal in our component.
+   * The initial value of the signal is an empty array, so that the grid will be empty until the first products are fetched.
+   */
   productsFilterSubject: Subject<Product[]> = new Subject();
 
+  /**
+   * Signal that holds the list of products to display in the grid, based on the current filters. This signal is created from the productsFilterSubject using the toSignal function, which allows us to use the products emitted by the subject as a signal in our component. The initial value of the signal is an empty array, so that the grid will be empty until the first products are fetched.
+   * The productsFilterSubject is updated with the new products every time the filterData signal changes (after the debounce) and the products are fetched from the products service.
+   */
   productz: Signal<Product[]> = toSignal(this.productsFilterSubject
     , { initialValue: [] });
 
@@ -52,10 +97,15 @@ export class ProductsList implements AfterViewInit, OnDestroy {
   alertsService = inject(AlertsService);
 
   lastFocusedField: FieldTree<string | number> | null = null;
-  listenersAdded: { [key: string]: (evt: Event) => any } = {};
+  listenersAdded: { [key: string]: (evt: FocusEvent) => any } = {};
+
+  sortered = signal([0, 1, 0, 3, 0, 5].sort((next, prev) => {
+    var result = prev === 0 ? Number.MIN_VALUE : 0;
+    return result;
+  }));
 
   constructor() {
-
+    // this.sortered.set(this.sortered().sort((a, b) => b === 0 ? Number.MAX_VALUE : 0));
     effect(() => {
       const filterValue = this.filterData();
       const current = this.currentFilter();
@@ -76,12 +126,13 @@ export class ProductsList implements AfterViewInit, OnDestroy {
   ngAfterViewInit(): void {
     Object.keys(this.filterForm).forEach(key => {
       const field = this.filterForm[key as keyof typeof this.filterForm] as FieldTree<string | number>;
-      this.logger.info(`Field ${key}, name:${key}: `, field);
-      const listener = (evt: Event) => {
+      
+      const listener = (evt: FocusEvent) => {
         this.logger.info(`Event ${evt.type} on field ${key}: `, evt);
         this.lastFocusedField = field;
       }
       field().formFieldBindings().forEach(binding => {
+        this.logger.info(`Added focus event listener to Field ${key}`);
         binding.element.addEventListener('focus', listener);
         this.listenersAdded[key] = listener;
       });

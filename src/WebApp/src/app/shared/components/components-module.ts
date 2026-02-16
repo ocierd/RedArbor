@@ -6,6 +6,7 @@ import { SimpleDialog } from './dialogs/simple-dialog/simple-dialog';
 import { Grid } from './generic/grid/grid';
 import { SpinnerButton } from './generic/spinner-button/spinner-button';
 import { Spinner } from './generic/spinner/spinner';
+import { PipesModule } from '../pipes/pipes-module';
 
 /**
  * Module that declares and exports all shared components used across the app
@@ -15,17 +16,19 @@ const components = [
     SimpleDialog,
     Grid,
     SpinnerButton,
+    Spinner,
 ];
 
 
 @NgModule({
   declarations: [
     ...components,
-    Spinner,
+    
   ],
   imports: [
     CommonModule,
-    MaterialModule
+    MaterialModule,
+    PipesModule
 ],
   exports: [
     ...components

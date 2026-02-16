@@ -61,9 +61,7 @@ export class MainLayout {
 
   constructor(private authService: AuthService,
     private overlayContainer: OverlayContainer
-  ) {
-    console.log('Constructor of MAIN Layout');
-    
+  ) {    
     this.expiration = inject(ExpirationTokenState).expiration;
 
     effect(() => {
