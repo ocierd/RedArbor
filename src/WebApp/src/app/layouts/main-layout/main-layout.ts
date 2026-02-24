@@ -6,6 +6,7 @@ import { FormsModule } from '@angular/forms';
 import { MatSidenav } from '@angular/material/sidenav';
 import { AuthService, ExpirationTokenState } from '@services/redarbor/auth-service';
 import { OverlayContainer } from '@angular/cdk/overlay';
+import { SharedModule } from '../../shared/shared-module';
 
 
 /**
@@ -16,7 +17,7 @@ import { OverlayContainer } from '@angular/cdk/overlay';
   selector: 'app-main-layout',
   templateUrl: './main-layout.html',
   styleUrl: './main-layout.scss',
-  imports: [RouterOutlet, MaterialModule, FormsModule]
+  imports: [RouterOutlet, MaterialModule, FormsModule, SharedModule]
 })
 export class MainLayout {
 
@@ -29,13 +30,13 @@ export class MainLayout {
   /**
    * Inject the ExpirationTokenState to manage token expiration state
    */
-  protected expiration:Signal<number>;
+  protected expiration: Signal<number>;
 
   /**
    * Inject the Router to manage navigation
    */
   private router: Router = inject(Router);
-  
+
 
   /**
    * Available themes
@@ -61,7 +62,7 @@ export class MainLayout {
 
   constructor(private authService: AuthService,
     private overlayContainer: OverlayContainer
-  ) {    
+  ) {
     this.expiration = inject(ExpirationTokenState).expiration;
 
     effect(() => {
@@ -69,7 +70,7 @@ export class MainLayout {
       if (exp <= 0) {
         this.closeSession();
       }
-      
+
     });
   }
 
@@ -89,7 +90,7 @@ export class MainLayout {
     overlayContainerElement.classList.add(theme);
   }
 
-  
+
 
   /**
    * Navigate to specified route

@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule, DatePipe } from '@angular/common';
 import { DynamicPipe } from './dynamic-pipe';
+import { TimePipe } from './time-pipe';
 
 
 /**
@@ -8,6 +9,7 @@ import { DynamicPipe } from './dynamic-pipe';
  */
 const pipes = [
   DynamicPipe,
+  TimePipe
 ];
 
 @NgModule({

@@ -93,19 +93,28 @@ export class ProductsList implements AfterViewInit, OnDestroy {
   productz: Signal<Product[]> = toSignal(this.productsFilterSubject
     , { initialValue: [] });
 
-
+  /**
+   * Inject the AlertsService to show alert messages to the user, for example when an error occurs while fetching products or when the user clicks the alert button.
+   */
   alertsService = inject(AlertsService);
 
+  /**
+   * Keeps track of the last focused form field in the filter form.
+   */
   lastFocusedField: FieldTree<string | number> | null = null;
+
+  /**
+   * Object that contains event listeners added to the form fields bindings, to keep track of them and remove them when the component is destroyed to prevent memory lacks.
+   */
   listenersAdded: { [key: string]: (evt: FocusEvent) => any } = {};
 
+  
   sortered = signal([0, 1, 0, 3, 0, 5].sort((next, prev) => {
-    var result = prev === 0 ? Number.MIN_VALUE : 0;
+    var result = prev === 0 ? Number.MIN_SAFE_INTEGER : 0;
     return result;
   }));
 
   constructor() {
-    // this.sortered.set(this.sortered().sort((a, b) => b === 0 ? Number.MAX_VALUE : 0));
     effect(() => {
       const filterValue = this.filterData();
       const current = this.currentFilter();
@@ -126,7 +135,7 @@ export class ProductsList implements AfterViewInit, OnDestroy {
   ngAfterViewInit(): void {
     Object.keys(this.filterForm).forEach(key => {
       const field = this.filterForm[key as keyof typeof this.filterForm] as FieldTree<string | number>;
-      
+
       const listener = (evt: FocusEvent) => {
         this.logger.info(`Event ${evt.type} on field ${key}: `, evt);
         this.lastFocusedField = field;

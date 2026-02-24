@@ -1,0 +1,82 @@
+<mxfile host="65bd71144e">
+    <diagram id="products-warehouse-er" name="Products Warehouse ERD">
+        <mxGraphModel dx="1449" dy="1602" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="2200" pageHeight="1400" math="0" shadow="0">
+            <root>
+                <mxCell id="0"/>
+                <mxCell id="1" parent="0"/>
+                <mxCell id="enterprise" value="Enterprise&#xa;PK enterprise_id&#xa;name&#xa;registration_no&#xa;tax_id&#xa;created_at" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=6;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;" parent="1" vertex="1">
+                    <mxGeometry x="100" y="585" width="220" height="120" as="geometry"/>
+                </mxCell>
+                <mxCell id="warehouse" value="Warehouse&#xa;PK warehouse_id&#xa;FK enterprise_id&#xa;code&#xa;name&#xa;location&#xa;is_active" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=6;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=12;" parent="1" vertex="1">
+                    <mxGeometry x="400" y="560" width="220" height="170" as="geometry"/>
+                </mxCell>
+                <mxCell id="category" value="Category&#xa;PK category_id&#xa;name&#xa;description" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=6;fillColor=#f8cecc;strokeColor=#b85450;fontSize=12;" parent="1" vertex="1">
+                    <mxGeometry x="890" y="700" width="150" height="80" as="geometry"/>
+                </mxCell>
+                <mxCell id="supplier" value="Supplier&#xa;PK supplier_id&#xa;name&#xa;contact_name&#xa;email&#xa;phone" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=6;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=12;" parent="1" vertex="1">
+                    <mxGeometry x="1140" y="350" width="220" height="120" as="geometry"/>
+                </mxCell>
+                <mxCell id="product" value="Product&#xa;PK product_id&#xa;FK category_id&#xa;sku (unique)&#xa;name&#xa;unit_of_measure&#xa;reorder_level&#xa;standard_cost&#xa;is_active" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=6;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;" parent="1" vertex="1">
+                    <mxGeometry x="720" y="840" width="240" height="160" as="geometry"/>
+                </mxCell>
+                <mxCell id="inventory" value="Inventory&#xa;PK inventory_id&#xa;FK warehouse_id&#xa;FK product_id&#xa;on_hand_qty&#xa;reserved_qty&#xa;available_qty (derived)&#xa;last_counted_at" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=6;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=12;" parent="1" vertex="1">
+                    <mxGeometry x="380" y="850" width="260" height="150" as="geometry"/>
+                </mxCell>
+                <mxCell id="stock_movement" value="StockMovement&#xa;PK movement_id&#xa;FK warehouse_id&#xa;FK product_id&#xa;movement_type (IN/OUT/ADJUST/TRANSFER)&#xa;quantity&#xa;reference_type&#xa;reference_id&#xa;moved_at&#xa;created_by" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=6;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=12;" parent="1" vertex="1">
+                    <mxGeometry x="710" y="370" width="260" height="190" as="geometry"/>
+                </mxCell>
+                <mxCell id="purchase_order" value="PurchaseOrder&#xa;PK po_id&#xa;FK supplier_id&#xa;FK warehouse_id&#xa;po_number (unique)&#xa;status&#xa;ordered_at&#xa;expected_at&#xa;received_at" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=6;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=12;" parent="1" vertex="1">
+                    <mxGeometry x="1120" y="540" width="260" height="200" as="geometry"/>
+                </mxCell>
+                <mxCell id="purchase_order_line" value="PurchaseOrderLine&#xa;PK po_line_id&#xa;FK po_id&#xa;FK product_id&#xa;ordered_qty&#xa;received_qty&#xa;unit_cost" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=6;fillColor=#f8cecc;strokeColor=#b85450;fontSize=12;" parent="1" vertex="1">
+                    <mxGeometry x="1130" y="840" width="240" height="155" as="geometry"/>
+                </mxCell>
+                <mxCell id="sales_order" value="SalesOrder&#xa;PK so_id&#xa;FK warehouse_id&#xa;so_number (unique)&#xa;customer_name&#xa;status&#xa;ordered_at&#xa;shipped_at" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=6;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;" parent="1" vertex="1">
+                    <mxGeometry x="90" y="1035" width="260" height="180" as="geometry"/>
+                </mxCell>
+                <mxCell id="sales_order_line" value="SalesOrderLine&#xa;PK so_line_id&#xa;FK so_id&#xa;FK product_id&#xa;ordered_qty&#xa;shipped_qty&#xa;unit_price" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=6;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;" parent="1" vertex="1">
+                    <mxGeometry x="1140" y="1060" width="240" height="130" as="geometry"/>
+                </mxCell>
+                <mxCell id="rel_ent_wh" value="1:N" style="endArrow=block;endFill=1;html=1;strokeWidth=1.5;" parent="1" source="enterprise" target="warehouse" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="rel_cat_prod" value="1:N" style="endArrow=block;endFill=1;html=1;strokeWidth=1.5;" parent="1" source="category" target="product" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="rel_wh_inv" value="1:N" style="endArrow=block;endFill=1;html=1;strokeWidth=1.5;" parent="1" source="warehouse" target="inventory" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="rel_prod_inv" value="1:N" style="endArrow=block;endFill=1;html=1;strokeWidth=1.5;" parent="1" source="product" target="inventory" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="rel_wh_move" value="1:N" style="endArrow=block;endFill=1;html=1;strokeWidth=1.5;exitX=1;exitY=0;exitDx=0;exitDy=0;" parent="1" source="warehouse" target="stock_movement" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="rel_prod_move" value="1:N" style="endArrow=block;endFill=1;html=1;strokeWidth=1.5;" parent="1" source="product" target="stock_movement" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="rel_sup_po" value="1:N" style="endArrow=block;endFill=1;html=1;strokeWidth=1.5;" parent="1" source="supplier" target="purchase_order" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="rel_wh_po" value="1:N" style="endArrow=block;endFill=1;html=1;strokeWidth=1.5;" parent="1" source="warehouse" target="purchase_order" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="rel_po_pol" value="1:N" style="endArrow=block;endFill=1;html=1;strokeWidth=1.5;" parent="1" source="purchase_order" target="purchase_order_line" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="rel_prod_pol" value="1:N" style="endArrow=block;endFill=1;html=1;strokeWidth=1.5;" parent="1" source="product" target="purchase_order_line" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="rel_wh_so" value="1:N" style="endArrow=block;endFill=1;html=1;strokeWidth=1.5;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="warehouse" target="sales_order" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="rel_so_sol" value="1:N" style="endArrow=block;endFill=1;html=1;strokeWidth=1.5;" parent="1" source="sales_order" target="sales_order_line" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="rel_prod_sol" value="1:N" style="endArrow=block;endFill=1;html=1;strokeWidth=1.5;" parent="1" source="product" target="sales_order_line" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+            </root>
+        </mxGraphModel>
+    </diagram>
+</mxfile>

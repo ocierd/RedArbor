@@ -13,7 +13,7 @@
         <button matIconButton (click)="closeSession()">
             <mat-icon>close</mat-icon>
         </button>
-        <span>{{ expiration() }}</span>
+        <span>{{ expiration() | time }}</span>
         <!-- Theme selector begins -->
         <button matIconButton [matMenuTriggerFor]="menu">
             <mat-icon>more_vert</mat-icon>

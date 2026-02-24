@@ -24,8 +24,8 @@ public class GetFilteredProductsHandler(IApplicationDbContext context)
 
         if (!string.IsNullOrEmpty(request.Name))
         {
-            query = query.Where(p => p.Name.ToLower().Contains(request.Name.ToLower()) 
-            || (p.Description !=null && p.Description.ToLower().Contains(request.Name.ToLower())) );
+            query = query.Where(p => EF.Functions.Like(p.Name, $"%{request.Name}%") 
+            || (p.Description !=null && EF.Functions.Like(p.Description, $"%{request.Name}%")) );
         }
 
         if (request.CategoryId.HasValue)
